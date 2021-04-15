@@ -1,8 +1,11 @@
 ---
-title: "ProyectoEstadistica"
+title: "proyecto_estadistica"
 author: "Warner Hurtado Laguna"
 date: "14/4/2021"
-output: html_document
+output:
+    pdf_document :
+      latex_engine : xelatex
+mainfont : NanumGothic
 ---
 
 ```{r setup, include=FALSE}
@@ -27,4 +30,22 @@ You can also embed plots, for example:
 plot(pressure)
 ```
 
+```{r pressure, echo=FALSE}
+tinytex::install_tinytex()
+```
+
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+```{r}
+
+library(nycflights13)
+
+flights
+
+#Para sacar la media de la base de datos
+min(flights $ arr_time)
+
+str(flights)
+
+```

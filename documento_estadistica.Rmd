@@ -1,0 +1,53 @@
+---
+title: Instituto Tecnológico de Costa Rica
+
+subtitle: Proyecto de Estadística
+
+author: 
+- \n
+- "Integrantes:"
+- \n
+- Jose Ignacio Alfaro Solano
+- Marco Antonio Espinoza Salas
+- Warner Fidel Hurtado Laguna
+- Lester Alexander Trejos Bermúdez
+- \n
+- "Profesor:"
+- \n
+- Esteban Ballestero Alfaro
+- \n
+- "Fecha:"
+- \n
+
+date: "14/4/2021"
+output:
+  word_document: default
+  html_document: default
+---
+\newpage
+
+### Nombre de la base de datos
+
+ejemploNombreBaseDeDatos
+
+### Descripción del dataset seleccionado
+
+aquí la descripción
+
+- \n
+- \n
+
+### Resumen de variables seleccionadas
+
+
+|  | Variables         | Tipo        |    Parametros por estima (IC)  |
+|--|-------------------|-------------|--------------------------------|
+|  | Binomial          | binom       |    Normal                      | 
+|  | Poisson           | pois        |    t Student                   |
+|  | Geométrica        | geom        |    F                           |
+|  | Hipergeométrica   | hyper       |    Chi-Cuadrado                |
+|  |                   |             |    Exponencial                 | 
+  
+
+
+
