@@ -47,7 +47,268 @@ aquí la descripción
 |  | Geométrica        | geom        |    F                           |
 |  | Hipergeométrica   | hyper       |    Chi-Cuadrado                |
 |  |                   |             |    Exponencial                 | 
-  
+
+
+```{r}
+
+library(nycflights13)
+
+data("flights")
+
+dataFlight <- flights
+```
+
+
+
+```{r}
+
+#Variable uno cuantitativa
+
+length(dataFlight$flight)
+
+test2 <- subset(dataFlight, select = c("origin", "dest", "air_time"))
+
+
+#muestra1 <- dataFlight[,c("origin", "dest", "air_time")]
+
+#muestra1 <- na.omit(muestra1)
+
+test3 <- filter(test2, origin == 'EWR', dest == "MIA" )
+
+#muestra2 <- muestra1[muestra1$origin == "LGA" | muestra1$origin == "JFK", ]
+
+#muestra3 <- muestra1[muestra1$origin == c("JFK", "LGA"), ]
+
+airTime <- as.integer(test3$air_time)
+
+mean(airTime, na.rm = TRUE)
+
+```
+
+
+
+```{r}
+#Variable dos cuantitativa
+
+data("planes")
+
+dataPlanes <- planes
+planes
+
+atlanta <- c(48,49,49,50,50,50,51,51,52)
+
+var(atlanta)
+#varianza
+variance <- function (x)   sum((x-mean(x))^2)/(length(x)-1) #escrita como una funcion
+variance(f)
+
+#desviacion estandar
+#sd(f)
+
+```
+
+
+```{r}
+#Proporciones cualitativa
+
+dataPlanes
+proporUno <- subset(dataPlanes, select = c("year","manufacturer"))
+#proporUno <- proporUno[1: 300]
+
+proporUno <- filter(proporUno, manufacturer == 'AIRBUS INDUSTRIE')
+
+proporUno <- proporUno$year[1: 300]
+
+#proporUno <- as.integer(proporUno)
+
+
+
+
+#proporUno <- duplicated(proporUno, x == 1999)
+
+#proporUno
+
+#length(proporUno$manufacturer)
+
+
+
+```
+
+
+
+
+
+```{r}
+#---------------------------------------------DISTRIBUCION NORMAL Z---------------------------------------
+
+dataFlight <- flights
+
+#Estos son los n cantidad de vuelos que salen de LGA y tienen como destino JFK
+var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
+
+#En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anterionrmente
+var1 <- na.omit(var1$air_time)
+
+n <- length(var1)
+#El n = 101140
+
+vMuestral <- sd(var1)
+#varianza = 2440.154
+
+
+#Promedio muestral
+#En este caso sumamos todas las duraciones de los vuelos y las dividimos entre el total de vuelos
+
+pMuestral <- (sum(var1) / n)
+#pMuestral = 117.8258
+
+
+#obteniendo la distribucion normal z
+
+alphaMedios <- 0.025
+
+z <-  qnorm(alphaMedios, mean = 0, sd = 1)
+#z = -1.959964
+
+icIzq <- pMuestral + z * (vMuestral/sqrt(n))
+
+icDer <- pMuestral - z * (vMuestral/sqrt(n))
+
+icIzq # = 117.5214
+
+icDer # 118.1302
+
+#]117.5214, 118.1302[
+
+#Al realizar los respectivos calculos de la distribucion normal z con el n tiempos de vuelos de origen LGA a destino JFK se obtuvo un intervalo de confianza de: ]117.5214, 118.1302[
+```
+
+```{r}
+#---------------------------------------------DISTRIBUCION  T   ---------------------------------------
+dataFlight <- flights
+
+#Estos son los n cantidad de vuelos que salen de LGA y tienen como destino JFK
+var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
+
+#En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anterionrmente
+var1 <- na.omit(var1$air_time[1: 25])
+
+#Ya que es una distribucion t, se debe de tener un n<30, por ende se tomaron los primeros 25 tiempos de vuelos.
+n <- length(var1)
+
+#Seguidamente se obtiene la varianza muestral
+vMuestral <-  sd(var1) #= 56.28203
+
+
+#Promedio muestral
+pMuestral <- (sum(var1) / n) #= 158.2
+
+
+#obteniendo la distribucion t
+nivelSignificancia <- 0.025
+
+
+#nivel de significancia y grados de libertad
+t = qt(nivelSignificancia, n-1) # t = -2.063899
+
+icIzq <- pMuestral + t * (vMuestral/sqrt(n))
+
+icDer <- pMuestral - z * (vMuestral/sqrt(n))
+
+icIzq # = 134.9679
+
+icDer # 180.2621
+
+#]134.9679, 180.2621[
+
+#Al realizar los respectivos calculos de la distribucion t con el n tiempos de vuelos menores a 30, de origen LGA a destino JFK se obtuvo un intervalo de confianza de: ]134.9679, 180.2621[
+
+```
+
+```{r}
+#--------------------------------------------- Propocion con distribucion normal z   ---------------------------------------
+dataFlight <- flights
+
+#Estos son los n cantidad de vuelos que salen de LGA y tienen como destino JFK
+var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ] 
+
+n <- length(na.omit(var1$air_time))
+#El n = 101140
+
+#Para realizar el respectivo calculo de la proporcion de tiempos de vuelo se tomaron todos los vuelos no mayores o igual 100
+var1 <- na.omit(var1[var1$air_time <= 100,])
+
+# =35797
+pEstadistico <- na.omit(var1$air_time)
+
+# =  0.3539351
+pEstadistico <- length(pEstadistico)/n
+
+#= 0.6460649
+qEstadistico <- 1 - pEstadistico 
+
+#obteniendo la distribucion normal z
+alphaMedios <- 0.025
+
+z <-  qnorm(alphaMedios, mean = 0, sd = 1)
+#z = -1.959964
+
+icIzq <- pEstadistico + z * sqrt((pEstadistico*qEstadistico)/n)
+
+icDer <- pEstadistico - z * sqrt((pEstadistico*qEstadistico)/n)
+
+icIzq # = 0.3509881
+
+icDer # 0.3568822
+
+#Al realizar los respectivos calculos de la proporcion con distribucion normal z con el n tiempos de vuelos de origen LGA a destino JFK se obtuvo un intervalo de confianza de: ]0.3509881, 0.3568822[
+
+```
+
+
+```{r}
+#----------------------------------------------------------VARIANCIA----------------------------------------------------------------
+
+dataFlight <- flights
+
+#Estos son los n cantidad de vuelos que salen de LGA y tienen como destino JFK
+var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
+
+#En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anterionrmente
+var1 <- na.omit(var1$air_time[1: 100])
+
+#Ya que es una distribucion t, se debe de tener un n<30, por ende se tomaron los primeros 100 tiempos de vuelos.
+n <- length(var1)
+
+gradosLibertad <- 99
+
+
+#Promedio muestral
+s <- (sum(var1) / n)
+
+s2 <- (s)^2
+
+alphaMedios <- 0.025
+
+alpha2 <- 1 - alphaMedios
+
+
+chiCuadrado1 <- qchisq(alphaMedios, gradosLibertad)
+
+chiCuadrado2 <- qchisq(alpha2, gradosLibertad)
+
+icIzq <- (((n-1)*s2)/(chiCuadrado2))
+
+icDer <- (((n-1)*s2)/(chiCuadrado1))
+
+icIzq # = 17862.38
+
+icDer # 31268.92
+
+#Al realizar los respectivos calculos de la Variancia con distribucion Chi-cuadrado con el n = 100 tiempos de vuelos de origen LGA a destino JFK se obtuvo un intervalo de confianza de: ]17862.38, 31268.92[
+
+
+```
 
 
 
