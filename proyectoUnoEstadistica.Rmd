@@ -59,6 +59,8 @@ data("flights")
 
 dataFlight <- flights
 
+dataFlight
+
 
 #if (!require('devtools')) install.packages('devtools')
 #devtools::install_github('fhernanb/stests', force=TRUE)
@@ -87,12 +89,12 @@ dataFlight
 |  | air-time          | minutos     |    t Student                   |
 |  | air-time          | minutos     |    F                           |
 |  | air-time          | minutos     |    Chi-Cuadrado                |
-|  |                   |             |    Exponencial                 | 
+|  | air-time          | minutos     |    Exponencial                 | 
 
 
 - \n 
 
-## Graficos
+# Graficos
 
 Que alguién los haga jaja
 
@@ -100,46 +102,46 @@ Que alguién los haga jaja
 
 - \n
 
-## Pruebas de intervalos de confianza para una población
+# Pruebas de intervalos de confianza para una población
 
 - \n
 
 
-### Distribución normal Z
+## **Distribución normal Z**
 
-En el siguiente prueba se procederá a realizar las respectivas pruebas con las distribución z, en la cual se tomará un nivel de confianza del 95%.
+En la siguiente prueba se procederá a realizar las respectivas pruebas con la distribución normal z, en la cual se tomará un nivel de confianza del 95%.
 
 - \n
-
 
 
 ```{r}
 
-#En la siguiente asignación se toman las n cantidad de vuelos que salen de LGA y tienen como destino JFK, y me guarda en var1 sólo los vuelos con dichas características.
-var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
-
+#En la siguiente asignación se toman la n cantidad de vuelos que salen de JFK y tienen como destino MIA, y  guarda en var1 sólo los vuelos con dichas características.
+var1 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "MIA", ]$air_time)
 #En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anterionrmente
-var1 <- na.omit(var1$air_time)
 
 #Se procede a aplicar la función de PASWR2, en la cual se le pasan como parametros la lista de tiempos, la desviación estandar y por último el nivel de significancia.
-z.test(x = var1, sigma.x = sd(var1), conf.level = 0.95)$conf.int
+BSDA:: z.test(x = var1, sigma.x = sd(var1), conf.level = 0.95)$conf.int
+
+
 ```
-- \n
-
-Al realizar los respectivos cálculos de la distribución normal z con la 'n' cantidad de tiempos de vuelos con origen LGA y destino a JFK se obtuvo un intervalo de confianza de: ]117.5214, 118.1302[.
 
 - \n
 
-### Distribución T
+Al realizar los respectivos cálculos de la distribución normal z con la 'n' cantidad de tiempos de vuelos con origen JFK y destino a MIA se obtuvo un intervalo de confianza de: ]151.7496, 152.5103[.
 
-En el siguiente prueba se procederá a realizar las respectivas pruebas con las distribución T, en la cual se tomará un nivel de confianza del 95%. Esta distribución debe tener un n < 30, Por lo que se tomarón los primeros 25 datos de la columna de air-time para dicha prueba.
+- \n
+
+## **Distribución T**
+
+En la siguiente prueba se procederá a realizar los respectivos cálculos con la distribución T, en la cual se tomará un nivel de confianza del 95%. Esta distribución debe tener un n < 30, por lo que se tomarón los primeros 25 datos de la columna de air-time para dicha prueba.
 
 ```{r}
-#En la siguiente asignación se toman las n cantidad de vuelos que salen de LGA y tienen como destino JFK, y me guarda en var1 sólo los vuelos con dichas características.
-var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
+#En la siguiente asignación se toman las n cantidad de vuelos que salen de JFK y tienen como destino MIA, y guarda en var1 sólo los vuelos con dichas características.
 
-#En esta variable se trabaja con el tiempo (air-time) en el aire de el origen y destino seleccionado anterionrmente el cual se van a utlizar las primeras 25 posiciones
-var1 <- na.omit(var1$air_time[1: 25])
+#En esta variable se trabaja con el tiempo (air-time) en el aire de el origen y destino seleccionados el cual se van a utlizar 25 datos de manera random
+var1 <- sample(x = na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "MIA", ]$air_time), size = 25, replace = TRUE)
+
 
 #Se procede a aplicar la función T, en la cual se le pasan como parametros la lista de tiempos y por último el nivel de significancia.
 t.test(var1, conf.level = 0.95)$conf.int
@@ -147,27 +149,27 @@ t.test(var1, conf.level = 0.95)$conf.int
 
 - \n
 
-Al realizar los respectivos cálculos de la distribución T con 25 datos de tiempos de vuelo, de origen LGA a destino JFK se obtuvo un intervalo de confianza de: ]134.9679, 180.2621[.
+Al realizar los respectivos cálculos de la distribución T con un n de 25 datos de tiempos de vuelo, con origen JFK a destino MIA se obtuvo un intervalo de confianza de: ]146.9743, 157.1857[.
 
 
 - \n
 
-### Una proporción
+## **Una proporción**
 
 Para realizar el respectivo cálculo de la proporción de tiempos de vuelo se tomaron todos los vuelos no mayores o igual 100, en la cual se tomará un nivel de confianza del 95%.
 
 ```{r}
-#En la siguiente asignación se toman las n cantidad de vuelos que salen de LGA y tienen como destino JFK, y me guarda en var1 sólo los vuelos con dichas características.
-var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
+#En la siguiente asignación se toman las n cantidad de vuelos que salen de JFK y tienen como destino MIA, y guarda en var1 sólo los vuelos con dichas características.
+var1 <- dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "MIA", ]
 
 #En la siguiente variable se asignan los éxitos obtenidos de la condioción n <= 100
-exitos <- var1[which(na.omit(var1$air_time) <= 100), ]
+exitos <- var1[which(na.omit(var1$air_time) <= 150), ]
 
 #En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anterionrmente
 var1 <- na.omit(var1$air_time)
 
 
-#Se obtine la cantidad de exitos de la variable anterior exitos
+#Se obtiene la cantidad total de éxitos de la variable anterior éxitos
 totalExitos <- length(exitos$air_time)
 totalExitos
 
@@ -175,35 +177,131 @@ totalExitos
 prop.test(totalExitos, length(var1), conf.level = 0.95)$conf.int
 
 ```
-#Al realizar los respectivos calculos de la proporcion con la cantidad de tiempos de vuelos de origen LGA a destino JFK menores a 100 minutos se obtuvo un intervalo de confianza de: ]0.3509888, 0.3568926[.
+Al realizar los respectivos cálculos de la proporción con la cantidad de tiempos de vuelos de origen JFK a destino MIA menores a 100 minutos se obtuvo un intervalo de confianza de: ]0.4677168, 0.5021818[.
 
-### Varianza
+## **Varianza**
 
-En la última prueba de una población se procede a realizar los cálculos con un intervalo de confianza del 95%, en la cual se utiliza la catidad total de la la variable air-time para una mejor estamación.
+En la última prueba para una población se procede a realizar los cálculos con un intervalo de confianza del 95%, en la cual se utiliza la catidad total de las variables air-time para una mejor estamación.
 
 ```{r}
-#En la siguiente asignación se toman las n cantidad de vuelos que salen de LGA y tienen como destino JFK, y me guarda en var1 sólo los vuelos con dichas características.
-var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
-
-#En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anterionrmente
-var1 <- na.omit(var1$air_time)
+#En la siguiente asignación se toman los n cantidad de vuelos que salen de JFK y tienen como destino MIA, y guarda en var1 sólo los vuelos con dichas características.
+var1 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "MIA", ]$air_time)
 
 #En la siguiente función de stests se procede a igresar la lista de los tiempos y luego el nivel de confianza
-var.test(x = var1, conf.level = 0.95)$conf.int
+stests:: var.test(x = var1, conf.level = 0.95)$conf.int
 
 ```
 
 - \n
-Al realizar los respectivos cálculos de la variancia con un intervalo de confianza  del 95% para los tiempos de vuelos de origen LGA a destino JFK se obtuvo un intervalo de confianza de: ]2419.025, 2461.562[
+Al realizar los respectivos cálculos de la variancia con un intervalo de confianza  del 95% para los tiempos de vuelos de origen JFK a destino MIA se obtuvo un intervalo de confianza de: ]117.9459 129.9276[.
 
 
 - \n
 
 - \n
 
-## Pruebas de intervalos de confianza para dos poblaciones
+# Pruebas de intervalos de confianza para dos poblaciones
 
 - \n
+
+## **Una diferencia de promedios usando distribución Z para dos poblaciones**
+
+En la siguiente prueba se procederá a realizar los respectivos análisis con la distribución normal z, en la cual se tomará un nivel de confianza del 95%. Para dicha prueba se toman dos diferentes poblaciones, cada población tiene un mismo origen y destinos distintos.
+
+```{r}
+#En la siguiente asignación se toman los n cantidad de vuelos que salen de JFK y tienen como destino MIA, y guarda en var1 sólo los vuelos con dichas características.
+prueba1 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "MIA", ]$air_time)
+
+#Estos son los n cantidad de vuelos que salen de JFK y tienen como destino RDU
+prueba2 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "RDU", ]$air_time)
+
+#Para la respectiva prueba se ingresan como para metros la primera población, luego la segunda, seguidamente la desviación estandar de cada una, en el mismo orden y por último el nivel de confianza
+BSDA:: z.test(prueba1, prueba2, sigma.x = sd(prueba1), sigma.y = sd(prueba2), conf.level = 0.95 )$conf.int
+```
+
+- \n
+
+Al realizar los respectivos cálculos de las dos poblaciones con la distribucion normal z, con un n1 = cantidad de tiempos de vuelos de JFK A MIA y un n2= cantidad de tiempos de vuelos de JFK a RDU. Para dicha prueba se obtuvo un intervalo de confianza de: ]79.82943, 80.71615[, con un nivel de significancia del 95%.
+
+- \n
+
+## **Diferencia de promedios utilizando distribución T para dos poblaciones**
+
+En la siguiente prueba se procederá a realizar los respectivos cálculos con la distribución T, en la cual se tomará un nivel de confianza del 95%. Esta distribución debe tener un n < 30, por lo que se tomarón 25 datos aleatorios en ambas poblaciones de la columna de *air_time* para dicha prueba.
+
+```{r}
+#En la siguiente asignación se toman los n cantidad de vuelos que salen de JFK y tienen como destino MIA, y guarda en var1 sólo los vuelos con dichas características.
+var1 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "MIA", ]$air_time)
+
+#Estos son los n cantidad de vuelos que salen de JFK y tienen como destino RDU
+var2 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "RDU", ]$air_time)
+
+#Se extraen aleatoriamente 25 datos como muestra de la primera poblacion
+prueba1 <- sample(x = var1, size = 25, replace = TRUE)
+
+#Se extraen aleatoriamente 25 datos como muestra de la segunda poblacion
+prueba2 <- sample(x = var2, size = 25, replace = TRUE)
+
+#Para esta función solamente se ingresan las pruebas y el nivel de confianza.
+t.test(prueba1, prueba2, conf.level = 0.95)$conf.int
+
+```
+
+- \n
+
+Al realizar los respectivos calculos de las dos poblaciones con la distribución t, con el n1 = 25 y n2= 25 tiempos de vuelos de origen JFK a destino MIA y de origen  JFK a destino RDU se obtuvo un intervalo de confianza de: ]75.78145, 84.13855[ con un nivel de significancia del 95%.
+
+- \n
+
+## **Diferencia de proporciones para dos poblaciones**
+
+En esta prueba se trabaja con el tiempo en el aire de el origen y destino seleccionados en el siguiente código para ambas poblaciones, donde se seleccionan los viajes menores o iguales a 150 minutos. Para la respectiva prueba se utiliza un nivel de confianza de 95%.
+
+```{r}
+#En la siguiente asignación se toman los n cantidad de vuelos que salen de JFK y tienen como destino MIA, y guarda en var1 sólo los vuelos con dichas características.
+prueba1 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "MIA", ]$air_time)
+
+#Estos son los n cantidad de vuelos que salen de JFK y tienen como destino RDU
+prueba2 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "RDU", ]$air_time)
+
+
+#El length de p1 y p2 son los exitos de los vuelos que tienen un tiempo menor o igual a 150
+exitoP1 <- length(which(prueba1 <= 150))
+exitoP2 <- length(which(prueba2 <= 150))
+
+#Usando la funcion de prop.test se sacan los intervalos de confianza respectivos, primero con los
+#exitos de la población 1 y su respectivo tamaño, y segundo con la poblacion 2
+prop.test(x = c(exitoP1, exitoP2), n = c(length(prueba1), length(prueba2)), conf.level = 0.95)$conf.int
+
+#Usando la funcion de prop.test se sacan los intervalos de confianza respectivos, primero con los
+#exitos de la poblacion 2 y su respectivo tamaño, y segundo con la poblacion 1
+prop.test(x = c(exitoP2, exitoP1), n = c(length(prueba2), length(prueba1)), conf.level = 0.95)$conf.int
+```
+
+Al realizar los respectivos cálculos de las dos poblaciones con la distribución normal, con el p1 = cantidad de tiempos de vuelo, de 1000 vuelos de JFK a MIA y p2= cantidad de tiempo de vuelo de 1000 vuelos de JFK a RDU, se obtuvo un intervalo de confianza de: ]-0.5324788, -0.4976582[, con un nivel de significancia del 95%.
+
+Intercambiando los exitos y las p estimadores, se obtiene un intervalo de confianza  ]0.4976582, 0.5324788[, con un nivel de significancia del 95%
+
+- \n
+
+## **Cociente de variancias de dos poblaciones**
+
+Para la última prueba con dos poblaciones se utiliza un nivel de confianza del 95%.
+
+```{r}
+#En la siguiente asignación se toman los n cantidad de vuelos que salen de JFK y tienen como destino MIA, y guarda en var1 sólo los vuelos con dichas características.
+var1 <- dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "MIA", ]
+
+#Estos son los n cantidad de vuelos que salen de JFK y tienen como destino RDU
+var2 <- dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "RDU", ]
+
+#Para la siguiente función se le pasa la columna de air_time de ambas variables y por último el nivel de confianza.
+stests:: var.test( na.omit(var1$air_time),  na.omit(var2$air_time), conf.level = 0.95)$conf.int
+```
+Al realizar los respectivos cálculos de las dos poblaciones con la distribución f, para cociente de varianzas, se obtuvo un intervalo de confianza de: ]2.862129, 3.293065[, con un nivel de significancia del 95%.
+
+
+
 
 
 

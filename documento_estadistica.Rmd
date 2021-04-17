@@ -156,7 +156,9 @@ proporUno <- proporUno$year[1: 300]
 dataFlight <- flights
 
 #Estos son los n cantidad de vuelos que salen de LGA y tienen como destino JFK
-var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
+var1 <- dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "MIA", ]
+
+var1
 
 #En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anterionrmente
 var1 <- na.omit(var1$air_time)
@@ -321,11 +323,14 @@ var.test(x = var1, conf.level = 0.95)$conf.int
 #----------------------------------------diferencia de promedios menores a 30 con t student---------------------------------------
 dataFlight <- flights
 
+flights
 
 #PREGUNTAR AL PROFE SI SE PUEDE UTILIZAR DIFERENTE DESTINO
 
 #Estos son los n cantidad de vuelos que salen de LGA y tienen como destino JFK
-var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
+var1 <- dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "RDU", ]
+
+var1
 
 #Estos son los n cantidad de vuelos que salen de EWR y tienen como destino JFK
 var2 <-  dataFlight[dataFlight$origin == "EWR" | dataFlight$dest == "JFK", ]
@@ -360,6 +365,7 @@ prueba1 <- na.omit(var1$air_time)
 prueba2 <- na.omit(var2$air_time)
 
 z.test(prueba1, prueba2, sigma.x = sd(prueba1), sigma.y = sd(prueba2), conf.level = 0.95 )$conf.int
+
 
 ```
 
