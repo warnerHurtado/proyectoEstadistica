@@ -1,30 +1,209 @@
 ---
-title: "proyectoUnoEstadistica"
-author: "Warner Hurtado Laguna"
-date: "17/4/2021"
-output: word_document
+title: Instituto Tecnológico de Costa Rica
+
+subtitle: Proyecto de Estadística
+
+author: 
+- \n
+- "Integrantes:"
+- \n
+- Jose Ignacio Alfaro Solano
+- Marco Antonio Espinoza Salas
+- Warner Fidel Hurtado Laguna
+- Lester Alexander Trejos Bermúdez
+- \n
+- "Profesor:"
+- \n
+- Esteban Ballestero Alfaro
+- \n
+- "Fecha:"
+- \n
+
+date: "14/4/2021"
+output:
+  word_document: default
+  html_document: default
 ---
+\newpage
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+### Nombre de la base de datos
+
+nycflights13
+
+### Descripción del dataset seleccionado
+
+La base utilizada para el proyecto contiene información sobre todos los vuelos que salían de NUEVA YORK (por ejemplo EWR, JFK Y LGA)a destinos en los Estados Unidos, Puerto Rico y las Islas Vírgenes Americanas) en 2013: 336,776 vuelos en total. Para ayudar a comprender qué provoca retrasos, también incluye otros conjuntos de datos útiles. La base que está siendo utilizada contiene muchas tablas de datos como vuelos, climas, aviones, aeropuertos etc, para el desarrollo del presente proyecto se eligió la columna flights o vuelos. 
+
+El paquete flights o vuelos se divide en varias columnas como año, hora de salida, minutos, avión, origen destino y muchos otros. Para el manejo de este proyecto se trabajó con tres columnas respectivas, la de origen, destino y duración en el aire, las cuales fueron utilizadas en pruebas de una y dos poblaciones. Para la prueba se tomaron un origen y un destino en el cual se toma la duración entre ese respectivo origen y destino.
+
+- \n
+- \n
+
+### Librerías necesarias
+
+- \n
+
+if (!require('devtools')) install.packages('devtools')
+devtools::install_github('fhernanb/stests', force=TRUE)
+
+```{r}
+library(nycflights13)
+
+library(PASWR2)
+
+library(stests)
+
+library(BSDA)
+
+data("flights")
+
+dataFlight <- flights
+
+
+#if (!require('devtools')) install.packages('devtools')
+#devtools::install_github('fhernanb/stests', force=TRUE)
 ```
 
-## R Markdown
+- \n
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+### Variables de la base datos
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+- \n
 
-```{r cars}
-summary(cars)
+```{r}
+dataFlight
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+- \n
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+### Resumen de variables seleccionadas
+
+#### La siguiente variable fue utilizada para una y dos poblaciones, en donde se utilizaba la duración en aire de un destino al otro.
+
+|  | Variables         | Tipo        |    Parametros por estima (IC)  |
+|--|-------------------|-------------|--------------------------------|
+|  | air-time          | minutos     |    Normal                      | 
+|  | air-time          | minutos     |    t Student                   |
+|  | air-time          | minutos     |    F                           |
+|  | air-time          | minutos     |    Chi-Cuadrado                |
+|  |                   |             |    Exponencial                 | 
+
+
+- \n 
+
+## Graficos
+
+Que alguién los haga jaja
+
+- \n
+
+- \n
+
+## Pruebas de intervalos de confianza para una población
+
+- \n
+
+
+### Distribución normal Z
+
+En el siguiente prueba se procederá a realizar las respectivas pruebas con las distribución z, en la cual se tomará un nivel de confianza del 95%.
+
+- \n
+
+
+
+```{r}
+
+#En la siguiente asignación se toman las n cantidad de vuelos que salen de LGA y tienen como destino JFK, y me guarda en var1 sólo los vuelos con dichas características.
+var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
+
+#En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anterionrmente
+var1 <- na.omit(var1$air_time)
+
+#Se procede a aplicar la función de PASWR2, en la cual se le pasan como parametros la lista de tiempos, la desviación estandar y por último el nivel de significancia.
+z.test(x = var1, sigma.x = sd(var1), conf.level = 0.95)$conf.int
+```
+- \n
+
+Al realizar los respectivos cálculos de la distribución normal z con la 'n' cantidad de tiempos de vuelos con origen LGA y destino a JFK se obtuvo un intervalo de confianza de: ]117.5214, 118.1302[.
+
+- \n
+
+### Distribución T
+
+En el siguiente prueba se procederá a realizar las respectivas pruebas con las distribución T, en la cual se tomará un nivel de confianza del 95%. Esta distribución debe tener un n < 30, Por lo que se tomarón los primeros 25 datos de la columna de air-time para dicha prueba.
+
+```{r}
+#En la siguiente asignación se toman las n cantidad de vuelos que salen de LGA y tienen como destino JFK, y me guarda en var1 sólo los vuelos con dichas características.
+var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
+
+#En esta variable se trabaja con el tiempo (air-time) en el aire de el origen y destino seleccionado anterionrmente el cual se van a utlizar las primeras 25 posiciones
+var1 <- na.omit(var1$air_time[1: 25])
+
+#Se procede a aplicar la función T, en la cual se le pasan como parametros la lista de tiempos y por último el nivel de significancia.
+t.test(var1, conf.level = 0.95)$conf.int
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+- \n
+
+Al realizar los respectivos cálculos de la distribución T con 25 datos de tiempos de vuelo, de origen LGA a destino JFK se obtuvo un intervalo de confianza de: ]134.9679, 180.2621[.
+
+
+- \n
+
+### Una proporción
+
+Para realizar el respectivo cálculo de la proporción de tiempos de vuelo se tomaron todos los vuelos no mayores o igual 100, en la cual se tomará un nivel de confianza del 95%.
+
+```{r}
+#En la siguiente asignación se toman las n cantidad de vuelos que salen de LGA y tienen como destino JFK, y me guarda en var1 sólo los vuelos con dichas características.
+var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
+
+#En la siguiente variable se asignan los éxitos obtenidos de la condioción n <= 100
+exitos <- var1[which(na.omit(var1$air_time) <= 100), ]
+
+#En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anterionrmente
+var1 <- na.omit(var1$air_time)
+
+
+#Se obtine la cantidad de exitos de la variable anterior exitos
+totalExitos <- length(exitos$air_time)
+totalExitos
+
+#Para obtener la proporción se procede a ingresar el total de éxitos, el total de todas las variables y por último el nivel de confianza
+prop.test(totalExitos, length(var1), conf.level = 0.95)$conf.int
+
+```
+#Al realizar los respectivos calculos de la proporcion con la cantidad de tiempos de vuelos de origen LGA a destino JFK menores a 100 minutos se obtuvo un intervalo de confianza de: ]0.3509888, 0.3568926[.
+
+### Varianza
+
+En la última prueba de una población se procede a realizar los cálculos con un intervalo de confianza del 95%, en la cual se utiliza la catidad total de la la variable air-time para una mejor estamación.
+
+```{r}
+#En la siguiente asignación se toman las n cantidad de vuelos que salen de LGA y tienen como destino JFK, y me guarda en var1 sólo los vuelos con dichas características.
+var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
+
+#En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anterionrmente
+var1 <- na.omit(var1$air_time)
+
+#En la siguiente función de stests se procede a igresar la lista de los tiempos y luego el nivel de confianza
+var.test(x = var1, conf.level = 0.95)$conf.int
+
+```
+
+- \n
+Al realizar los respectivos cálculos de la variancia con un intervalo de confianza  del 95% para los tiempos de vuelos de origen LGA a destino JFK se obtuvo un intervalo de confianza de: ]2419.025, 2461.562[
+
+
+- \n
+
+- \n
+
+## Pruebas de intervalos de confianza para dos poblaciones
+
+- \n
+
+
+
