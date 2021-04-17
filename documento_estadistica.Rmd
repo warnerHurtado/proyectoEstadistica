@@ -53,9 +53,18 @@ aquí la descripción
 
 library(nycflights13)
 
+library(PASWR2)
+
+library(stests)
+
+library(BSDA)
+
 data("flights")
 
 dataFlight <- flights
+
+# if (!require('devtools')) install.packages('devtools')
+# devtools::install_github('fhernanb/stests', force=TRUE)
 ```
 
 
@@ -149,34 +158,38 @@ var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
 #En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anterionrmente
 var1 <- na.omit(var1$air_time)
 
-n <- length(var1)
+# n <- length(var1)
 #El n = 101140
 
-vMuestral <- sd(var1)
+# vMuestral <- sd(var1)
 #varianza = 2440.154
 
 
 #Promedio muestral
 #En este caso sumamos todas las duraciones de los vuelos y las dividimos entre el total de vuelos
 
-pMuestral <- (sum(var1) / n)
+# pMuestral <- (sum(var1) / n)
 #pMuestral = 117.8258
 
 
 #obteniendo la distribucion normal z
 
-alphaMedios <- 0.025
+# alphaMedios <- 0.025
+# 
+# norma <-  qnorm(alphaMedios, mean = 0, sd = 1)
+# #z = -1.959964
+# 
+# icIzq <- pMuestral + norma * (vMuestral/sqrt(n))
+# 
+# icDer <- pMuestral - norma * (vMuestral/sqrt(n))
+# 
+# icIzq # = 117.5214
+# 
+# icDer # 118.1302
+# 
 
-z <-  qnorm(alphaMedios, mean = 0, sd = 1)
-#z = -1.959964
+z.test(x = var1, sigma.x = sd(var1), conf.level = 0.95)$conf.int
 
-icIzq <- pMuestral + z * (vMuestral/sqrt(n))
-
-icDer <- pMuestral - z * (vMuestral/sqrt(n))
-
-icIzq # = 117.5214
-
-icDer # 118.1302
 
 #]117.5214, 118.1302[
 
@@ -193,31 +206,33 @@ var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
 #En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anterionrmente
 var1 <- na.omit(var1$air_time[1: 25])
 
-#Ya que es una distribucion t, se debe de tener un n<30, por ende se tomaron los primeros 25 tiempos de vuelos.
-n <- length(var1)
+# #Ya que es una distribucion t, se debe de tener un n<30, por ende se tomaron los primeros 25 tiempos de vuelos.
+# n <- length(var1)
+# 
+# #Seguidamente se obtiene la varianza muestral
+# vMuestral <-  sd(var1) #= 56.28203
+# 
+# 
+# #Promedio muestral
+# pMuestral <- (sum(var1) / n) #= 158.2
+# 
+# 
+# #obteniendo la distribucion t
+# nivelSignificancia <- 0.025
+# 
+# 
+# #nivel de significancia y grados de libertad
+# t = qt(nivelSignificancia, n-1) # t = -2.063899
+# 
+# icIzq <- pMuestral + t * (vMuestral/sqrt(n))
+# 
+# icDer <- pMuestral - z * (vMuestral/sqrt(n))
+# 
+# icIzq # = 134.9679
+# 
+# icDer # 180.2621
 
-#Seguidamente se obtiene la varianza muestral
-vMuestral <-  sd(var1) #= 56.28203
-
-
-#Promedio muestral
-pMuestral <- (sum(var1) / n) #= 158.2
-
-
-#obteniendo la distribucion t
-nivelSignificancia <- 0.025
-
-
-#nivel de significancia y grados de libertad
-t = qt(nivelSignificancia, n-1) # t = -2.063899
-
-icIzq <- pMuestral + t * (vMuestral/sqrt(n))
-
-icDer <- pMuestral - z * (vMuestral/sqrt(n))
-
-icIzq # = 134.9679
-
-icDer # 180.2621
+t.test(var1, conf.level = 0.95)$conf.int
 
 #]134.9679, 180.2621[
 
@@ -226,40 +241,53 @@ icDer # 180.2621
 ```
 
 ```{r}
-#--------------------------------------------- Propocion con distribucion normal z   ---------------------------------------
+#--------------------------------------------- Proporcion con distribucion normal z   ---------------------------------------
 dataFlight <- flights
 
 #Estos son los n cantidad de vuelos que salen de LGA y tienen como destino JFK
-var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ] 
+var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
 
-n <- length(na.omit(var1$air_time))
-#El n = 101140
+var2 <- na.omit(var1$air_time)
 
-#Para realizar el respectivo calculo de la proporcion de tiempos de vuelo se tomaron todos los vuelos no mayores o igual 100
-var1 <- na.omit(var1[var1$air_time <= 100,])
+length(var2)
+# 
+# n <- length(na.omit(var1$air_time))
+# #El n = 101140
+# 
+# #Para realizar el respectivo calculo de la proporcion de tiempos de vuelo se tomaron todos los vuelos no mayores o igual 100
+# var1 <- na.omit(var1[var1$air_time <= 100,])
+# var1
+# # =35797
+# pEstadistico <- na.omit(var1$air_time)
+# pEstadistico
 
-# =35797
-pEstadistico <- na.omit(var1$air_time)
 
-# =  0.3539351
-pEstadistico <- length(pEstadistico)/n
 
-#= 0.6460649
-qEstadistico <- 1 - pEstadistico 
+test <- var1[which(var1$air_time <= 100), ]
 
-#obteniendo la distribucion normal z
-alphaMedios <- 0.025
+exitos <- nrow(test)
+# 
+# # =  0.3539351
+# pEstadistico <- length(pEstadistico)/n
+# 
+# #= 0.6460649
+# qEstadistico <- 1 - pEstadistico 
+# 
+# #obteniendo la distribucion normal z
+# alphaMedios <- 0.025
+# 
+# z <-  qnorm(alphaMedios, mean = 0, sd = 1)
+# #z = -1.959964
+# 
+# icIzq <- pEstadistico + z * sqrt((pEstadistico*qEstadistico)/n)
+# 
+# icDer <- pEstadistico - z * sqrt((pEstadistico*qEstadistico)/n)
+# 
+# icIzq # = 0.3509881
+# 
+# icDer # 0.3568822
 
-z <-  qnorm(alphaMedios, mean = 0, sd = 1)
-#z = -1.959964
-
-icIzq <- pEstadistico + z * sqrt((pEstadistico*qEstadistico)/n)
-
-icDer <- pEstadistico - z * sqrt((pEstadistico*qEstadistico)/n)
-
-icIzq # = 0.3509881
-
-icDer # 0.3568822
+prop.test(exitos, length(var2), conf.level = 0.95)$conf.int
 
 #Al realizar los respectivos calculos de la proporcion con distribucion normal z con el n tiempos de vuelos de origen LGA a destino JFK se obtuvo un intervalo de confianza de: ]0.3509881, 0.3568822[
 
@@ -274,41 +302,143 @@ dataFlight <- flights
 #Estos son los n cantidad de vuelos que salen de LGA y tienen como destino JFK
 var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
 
+
+
 #En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anterionrmente
-var1 <- na.omit(var1$air_time[1: 100])
+var1 <- na.omit(var1$air_time)
+
 
 #Ya que es una distribucion t, se debe de tener un n<30, por ende se tomaron los primeros 100 tiempos de vuelos.
-n <- length(var1)
+# n <- length(var1)
+# 
+# gradosLibertad <- 99
+# 
+# 
+# #Promedio muestral
+# s <- (sum(var1) / n)
+# 
+# s2 <- (s)^2
+# 
+# alphaMedios <- 0.025
+# 
+# alpha2 <- 1 - alphaMedios
+# 
+# 
+# chiCuadrado1 <- qchisq(alphaMedios, gradosLibertad)
+# 
+# chiCuadrado2 <- qchisq(alpha2, gradosLibertad)
+# 
+# icIzq <- (((n-1)*s2)/(chiCuadrado2))
+# 
+# icDer <- (((n-1)*s2)/(chiCuadrado1))
+# 
+# icIzq # = 17862.38
+# 
+# icDer # 31268.92
 
-gradosLibertad <- 99
+var.test(x = var1, conf.level = 0.95)$conf.int
 
-
-#Promedio muestral
-s <- (sum(var1) / n)
-
-s2 <- (s)^2
-
-alphaMedios <- 0.025
-
-alpha2 <- 1 - alphaMedios
-
-
-chiCuadrado1 <- qchisq(alphaMedios, gradosLibertad)
-
-chiCuadrado2 <- qchisq(alpha2, gradosLibertad)
-
-icIzq <- (((n-1)*s2)/(chiCuadrado2))
-
-icDer <- (((n-1)*s2)/(chiCuadrado1))
-
-icIzq # = 17862.38
-
-icDer # 31268.92
 
 #Al realizar los respectivos calculos de la Variancia con distribucion Chi-cuadrado con el n = 100 tiempos de vuelos de origen LGA a destino JFK se obtuvo un intervalo de confianza de: ]17862.38, 31268.92[
 
 
 ```
 
+```{r}
+#----------------------------------------diferencia de promedios menores a 30 con t student---------------------------------------
+dataFlight <- flights
+
+
+#PREGUNTAR AL PROFE SI SE PUEDE UTILIZAR DIFERENTE DESTINO
+
+#Estos son los n cantidad de vuelos que salen de LGA y tienen como destino JFK
+var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
+
+#Estos son los n cantidad de vuelos que salen de EWR y tienen como destino JFK
+var2 <-  dataFlight[dataFlight$origin == "EWR" | dataFlight$dest == "JFK", ]
+
+#En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anterionrmente
+prueba1 <- na.omit(var1$air_time)
+
+prueba2 <- na.omit(var2$air_time)
+
+prueba1 <- sample(x = prueba1, size = 25, replace = TRUE)
+
+prueba2 <- sample(x = prueba2, size = 25, replace = TRUE)
+
+t.test(prueba1, prueba2, conf.level = 0.95)$conf.int
+
+```
+
+```{r}
+#Diferencia de promedios para muestras mayores o iguales a 30
+
+
+dataFlight <- flights
+
+var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
+
+#Estos son los n cantidad de vuelos que salen de EWR y tienen como destino JFK
+var2 <-  dataFlight[dataFlight$origin == "EWR" | dataFlight$dest == "JFK", ]
+
+#En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anterionrmente
+prueba1 <- na.omit(var1$air_time)
+
+prueba2 <- na.omit(var2$air_time)
+
+z.test(prueba1, prueba2, sigma.x = sd(prueba1), sigma.y = sd(prueba2), conf.level = 0.95 )$conf.int
+
+```
+
+
+```{r}
+#Diferencia de proporciones para dos poblaciones
+dataFlight <- flights
+
+#Estos son los n cantidad de vuelos que salen de LGA y tienen como destino JFK
+var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
+
+#Estos son los n cantidad de vuelos que salen de EWR y tienen como destino JFK
+var2 <-  dataFlight[dataFlight$origin == "EWR" | dataFlight$dest == "JFK", ]
+
+#En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anterionrmente donde se seleccionan los viajes menores o iguales a 100 minutos
+
+
+#Sacando 1000 datos para las pruebas
+
+#DEBEN SER AL AZAR O PUEDEN SER FIJOS?  <----------------------------- OJO
+
+prueba1 <- var1$air_time[1:1000]
+prueba2 <- var2$air_time[1:1000]
+
+#El length de p1 y p2 son los exitos
+exitoP1 <- length(which(prueba1 <= 100))
+
+exitoP2 <- length(which(prueba2 <= 100))
+
+#
+prop.test(x = c(exitoP1, exitoP2), n = c(length(prueba1), length(prueba2)), conf.level = 0.95)$conf.int
+
+
+prop.test(x = c(exitoP2, exitoP1), n = c(length(prueba2), length(prueba1)), conf.level = 0.95)$conf.int
+
+
+
+
+```
+
+```{r}
+#-------------VARIANZA PARA DOS COCIENTES-----------------------
+#Diferencia de proporciones para dos poblaciones
+dataFlight <- flights
+
+#Estos son los n cantidad de vuelos que salen de LGA y tienen como destino JFK
+var1 <- dataFlight[dataFlight$origin == "LGA" | dataFlight$dest == "JFK", ]
+
+#Estos son los n cantidad de vuelos que salen de EWR y tienen como destino JFK
+var2 <-  dataFlight[dataFlight$origin == "EWR" | dataFlight$dest == "JFK", ]
+
+var.test( na.omit(var1$air_time),  na.omit(var2$air_time), conf.level = 0.95)$conf.int
+```
 
 
