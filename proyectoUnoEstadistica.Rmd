@@ -19,7 +19,7 @@ author:
 - "Fecha:"
 - \n
 
-date: "17/4/2021"
+date: "12/05/2021"
 output:
   word_document: default
   html_document: default
@@ -104,8 +104,7 @@ plot_missing(dataFlight)
 ```
 
 El gráfico anterior nos demuestra que la escogencia de los datos está basada en una base datos confiable, ya que
-como se puede observar, los datos presentan un buen comportamiento. También, que no presenta datos en blanco, lo cual
-es óptimo para hacer cálculos estadísticos.
+como se puede observar, los datos presentan un buen comportamiento. También, se presentan datos en blanco, pero el porcentaje es muy pequeño lo cual hace que el dataset sea óptimo para hacer cálculos estadísticos.
 
 - \n
 
@@ -118,7 +117,7 @@ vis_dat(vuelos,warn_large_data = FALSE)
 
 ```
 
-En el gráfico anterior, se puede observar los tipos de variables, el nombre que cada una tiene, así como la cantidad de datos que contienen.
+En el gráfico anterior, se puede observar los tipos de variables, el nombre que cada una tiene, así como la cantidad de datos que contienen. Cabe resaltar que para este gráfico se eliminaron los valores en blanco.
 
 # Pruebas de intervalos de confianza para una población
 
@@ -127,7 +126,7 @@ En el gráfico anterior, se puede observar los tipos de variables, el nombre que
 
 ## **Distribución normal Z**
 
-En la siguiente prueba se procederá a realizar las respectivas procedimientos con la distribución normal z, en la cual se tomará un nivel de confianza del 95%.
+En la siguiente prueba se procederá a realizar los respectivos procedimientos con la distribución normal z, en la cual se tomará un nivel de confianza del 95%.
 Se tomaron datos de una población con un comportamiento normal. Se tomaron los tiempos en vuelo de todos los vuelos de origen JFK y destino MIA, este es el valor de 'x' en la función. Para el valor del sigma.x se tomó la desviación estándar de esos tiempos en aire de los vuelos y el conf.level significa el nivel de confianza para el intervalo, que es nuestro caso es de 95%. Para esta prueba se usó la librería 'BSDA'.
 
 - \n
@@ -135,10 +134,10 @@ Se tomaron datos de una población con un comportamiento normal. Se tomaron los 
 ### **Resultados**
 ```{r}
 
-#En la siguiente asignación se toman la n cantidad de vuelos que salen de JFK y tienen como destino MIA, y  guarda en var1 sólo los vuelos con dichas características.
+#En la siguiente asignación se toman la cantidad del tiempo de aire de los vuelos que salen de JFK y tienen como destino MIA, y  guarda en var1 sólo los vuelos con dichas características.
 var1 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "MIA", ]$air_time)
 
-#En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anterionrmente
+#En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anteriormente.
 
 #Se procede a aplicar la función de PASWR2, en la cual se le pasan como parametros la lista de tiempos, la desviación estandar y por último el nivel de significancia.
 BSDA:: z.test(x = var1, sigma.x = sd(var1), conf.level = 0.95)$conf.int
@@ -148,13 +147,13 @@ BSDA:: z.test(x = var1, sigma.x = sd(var1), conf.level = 0.95)$conf.int
 - \n
 
 ### **Conclusión**
-Al realizar los respectivos cálculos de la distribución normal z con '3285'que es cantidad de tiempos de vuelos con origen JFK y destino a MIA se obtuvo un intervalo de confianza de: ]151.7496, 152.5103[.
+Al realizar los respectivos cálculos de la distribución normal z con '3285'que es cantidad de tiempos de vuelos con origen JFK y destino a MIA se obtuvo un intervalo de confianza de 95% para el promedio del tiempo de vuelo desde JFK a MIA dado por: ]151.7496, 152.5103[.
 
 - \n
 
 ## **Distribución T**
 
-En la siguiente prueba se procederá a realizar los respectivos cálculos con la distribución TStudent, en la cual se tomará un nivel de confianza del 95%. Esta distribución debe tener un n < 30, por lo que se tomaron los primeros 25 datos de la columna de *air_time* para dicha prueba. Cabe destacar que la población presenta un compartamiento normal. Para esta prueba se usó la librería 'stats'.
+En la siguiente prueba se procederá a realizar los respectivos cálculos con la distribución TStudent, en la cual se tomará un nivel de confianza del 95%. Esta distribución debe tener un n < 30, por lo que se tomó una muestra aleatoria de tamaño 25, correspondientes a la columna de *air_time* para dicha prueba. Cabe destacar que la población presenta un compartamiento normal. Para esta prueba se usó la librería 'stats'.
 
 - \n
 
@@ -162,7 +161,7 @@ En la siguiente prueba se procederá a realizar los respectivos cálculos con la
 ```{r}
 #En la siguiente asignación se toman las n cantidad de vuelos que salen de JFK y tienen como destino MIA, y guarda en var1 sólo los vuelos con dichas características.
 
-#En esta variable se trabaja con el tiempo (air-time) en el aire de el origen y destino seleccionados el cual se van a utlizar 25 datos de manera random
+#En esta variable se trabaja con el tiempo (air-time) en el aire de el origen y destino seleccionados el cual se van a utilizar 25 datos de manera aleatoria
 var1 <- sample(x = na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "MIA", ]$air_time), size = 25, replace = TRUE)
 
 #Se procede a aplicar la función T, en la cual se le pasan como parametros la lista de tiempos y por último el nivel de significancia.
@@ -172,7 +171,7 @@ stats::t.test(var1, conf.level = 0.95)$conf.int
 - \n
 
 ### **Conclusión**
-Al realizar los respectivos cálculos de la distribución TStudent con un muestra de 25 datos de tiempos de vuelo, con origen JFK a destino MIA se obtuvo un intervalo de confianza de: ]146.9743, 157.1857[.
+Al realizar los respectivos cálculos de la distribución TStudent con una muestra aleatoria de tamaño 25,que representa la cantidad de tiempos de vuelos con origen JFK y destino a MIA se obtuvo un intervalo de confianza de 95% dado por: ]146.9743, 157.1857[.
 
 
 - \n
@@ -188,10 +187,10 @@ Para realizar el respectivo cálculo de la proporción de tiempos de vuelo se to
 #En la siguiente asignación se toman las n cantidad de vuelos que salen de JFK y tienen como destino MIA, y guarda en var1 sólo los vuelos con dichas características.
 var1 <- dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "MIA", ]
 
-#En la siguiente variable se asignan los éxitos obtenidos de la condioción n <= 100
+#En la siguiente variable se asignan los éxitos obtenidos de la condición n <= 100
 exitos <- var1[which(na.omit(var1$air_time) <= 150), ]
 
-#En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anterionrmente
+#En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anteriormente
 var1 <- na.omit(var1$air_time)
 
 
@@ -207,7 +206,7 @@ stats::prop.test(totalExitos, length(var1), conf.level = 0.95)$conf.int
 - \n
 
 ### **Conclusión**
-Al realizar los respectivos cálculos de la proporción con la cantidad de tiempos de vuelos de origen JFK a destino MIA menores a 100 minutos, se obtuvo un intervalo de confianza de: ]0.4677168, 0.5021818[.
+Al realizar los respectivos cálculos de la proporción con la cantidad de tiempos de vuelos de origen JFK a destino MIA menores a 150 minutos, se obtuvo un intervalo de confianza de 95%, dado por: ]0.4677168, 0.5021818[.
 
 ## **Varianza**
 
@@ -220,7 +219,7 @@ En la última prueba para una población, se procede a realizar los cálculos co
 #En la siguiente asignación se toman los n cantidad de vuelos que salen de JFK y tienen como destino MIA, y guarda en var1 sólo los vuelos con dichas características.
 var1 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "MIA", ]$air_time)
 
-#En la siguiente función de stests se procede a igresar la lista de los tiempos y luego el nivel de confianza
+#En la siguiente función de stests se procede a ingresar la lista de los tiempos y luego el nivel de confianza
 stests:: var.test(x = var1, conf.level = 0.95)$conf.int
 
 ```
@@ -228,7 +227,7 @@ stests:: var.test(x = var1, conf.level = 0.95)$conf.int
 - \n
 
 ### **Conclusión**
-Al realizar los respectivos cálculos de la variancia con un intervalo de confianza  del 95% para los tiempos de vuelos de origen JFK a destino MIA se obtuvo un intervalo de confianza de: ]117.9459 129.9276[.
+Al realizar el análisis de la variancia mediante la estimación por intervalo de confianza  de 95% para los tiempos de vuelos de origen JFK a destino MIA se obtuvo el siguiente IC: ]117.9459 129.9276[.
 
 
 - \n
@@ -247,28 +246,28 @@ En la siguiente prueba se procederá a realizar los respectivos análisis con la
 
 ### **Resultados**
 ```{r}
-#En la siguiente asignación se toman los n cantidad de vuelos que salen de JFK y tienen como destino MIA, y guarda en var1 sólo los vuelos con dichas características.
+#En la siguiente asignación se toman la cantidad de tiempo en el aire de los vuelos que salen de JFK y tienen como destino MIA, y guarda en var1 sólo los vuelos con dichas características.
 prueba1 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "MIA", ]$air_time)
 
 #Estos son los n cantidad de vuelos que salen de JFK y tienen como destino RDU
 prueba2 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "RDU", ]$air_time)
 
-#Para la respectiva prueba se ingresan como para metros la primera población, luego la segunda, seguidamente la desviación estandar de cada una, en el mismo orden y por último el nivel de confianza
+#Para la respectiva prueba se ingresan como para metros la primera población, luego la segunda, seguidamente la desviación estándar de cada una, en el mismo orden y por último el nivel de confianza
 BSDA:: z.test(prueba1, prueba2, sigma.x = sd(prueba1), sigma.y = sd(prueba2), conf.level = 0.95 )$conf.int
 ```
 
 - \n
 
 ### **Conclusión**
-Al realizar los respectivos cálculos de las dos poblaciones con la distribucion normal z, con un n1 = cantidad de tiempos de vuelos de JFK a MIA y un n2 = cantidad de tiempos de vuelos de JFK a RDU. Para dicha prueba se obtuvo un intervalo de confianza de: ]79.82943, 80.71615[; con un nivel de significancia del 95%.
+Al realizar los respectivos cálculos de las dos poblaciones con la distribución normal z, con un n1 = cantidad de tiempos de vuelos de JFK a MIA y un n2 = cantidad de tiempos de vuelos de JFK a RDU. Para dicha prueba se obtuvo un intervalo de confianza de: ]79.82943, 80.71615[; con un nivel de confianza del 95%.
 
-En conclusión, el valor de la primera población *prueba1* es mayor, ya que los valores de los intervalos de confianza son mayores, por ende, no se puede asumir una igualdad de medias, porque el 0 no está presente.
+En conclusión, el valor del promedio de la primera población *prueba1* es mayor, ya que los valores de los intervalos de confianza son ambos positivos, por ende, no se puede asumir una igualdad de medias, porque el 0 no está presente.
 
 - \n
 
 ## **Diferencia de promedios utilizando distribución T para dos poblaciones**
 
-En la siguiente prueba se procederá a realizar los respectivos cálculos con la distribución T, en la cual se tomará un nivel de confianza del 95%. Esta distribución debe tener un n < 30, por lo que se tomaron 25 datos aleatorios en ambas poblaciones de la columna de *air_time* para dicha prueba. Las poblaciones que contienen las dos muestra siguen una distribución normal. Para esta prueba se usó la librería 'stats'.
+En la siguiente prueba se procederá a realizar los respectivos cálculos con la distribución T, en la cual se tomará un nivel de confianza del 95%. Esta distribución debe tener un n < 30, por lo que se tomaron 25 datos aleatorios en ambas poblaciones de la columna de *air_time* para dicha prueba. Las poblaciones que contienen las dos muestras siguen una distribución normal. Para esta prueba se usó la librería 'stats'.
 
 - \n
 
@@ -294,9 +293,9 @@ stats::t.test(prueba1, prueba2, conf.level = 0.95)$conf.int
 - \n
 
 ### **Conclusión**
-Al realizar los respectivos cálculos de las dos muestras de las poblaciones con la distribución tStudent, con el n1 = 25 y n2 = 25 tiempos de vuelo de los vuelos de origen JFK a destino MIA y de origen  JFK a destino RDU, se obtuvo un intervalo de confianza de: ]75.78145, 84.13855[; con un nivel de significancia del 95%.
+Al realizar los respectivos cálculos de las dos muestras de las poblaciones con la distribución tStudent, con el n1 = 25 y n2 = 25 tiempos de vuelo de los vuelos de origen JFK a destino MIA y de origen  JFK a destino RDU, se obtuvo un intervalo de confianza de: ]75.78145, 84.13855[; con un nivel de confianza del 95%.
 
-En conclusión, el valor de la primera muestra es mayor, ya que los resultados de los intervalos de confianza son positivos, por ende, no se asume igualdad, ya que, el cero no está presente.
+En conclusión, el valor de la media de la primera muestra es mayor, ya que los resultados de los intervalos de confianza son positivos, por ende, no se asume igualdad, ya que, el cero no está presente.Por ende, se asumen diferencia en los grupos.
 
 - \n
 
@@ -315,27 +314,27 @@ prueba1 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "M
 prueba2 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "RDU", ]$air_time)
 
 
-#El length de p1 y p2 son los exitos de los vuelos que tienen un tiempo menor o igual a 150
+#El tamaño de p1 y p2 son los éxitos de los vuelos que tienen un tiempo menor o igual a 150
 exitoP1 <- length(which(prueba1 <= 150))
 exitoP2 <- length(which(prueba2 <= 150))
 
-#Usando la funcion de prop.test se sacan los intervalos de confianza respectivos, primero con los
-#exitos de la población 1 y su respectivo tamaño, y segundo con la poblacion 2
+#Usando la función de prop.test se sacan los intervalos de confianza respectivos, primero con los
+#éxitos de la población 1 y su respectivo tamaño, y segundo con la población 2
 stats::prop.test(x = c(exitoP1, exitoP2), n = c(length(prueba1), length(prueba2)), conf.level = 0.95)$conf.int
 
-#Usando la funcion de prop.test se sacan los intervalos de confianza respectivos, primero con los
-#exitos de la poblacion 2 y su respectivo tamaño, y segundo con la poblacion 1
+#Usando la función de prop.test se sacan los intervalos de confianza respectivos, primero con los
+#éxitos de la población 2 y su respectivo tamaño, y segundo con la población 1
 stats::prop.test(x = c(exitoP2, exitoP1), n = c(length(prueba2), length(prueba1)), conf.level = 0.95)$conf.int
 ```
 
 - \n
 
 ### **Conclusión**
-Al realizar los respectivos cálculos de las dos poblaciones con la distribución normal, con el p1 = cantidad de tiempos de vuelo, de 1000 vuelos de JFK a MIA y p2 = cantidad de tiempo de vuelo de 1000 vuelos de JFK a RDU, se obtuvo un intervalo de confianza de: ]-0.5324788, -0.4976582[; con un nivel de significancia del 95%.
+Al realizar los respectivos cálculos de las dos poblaciones con la distribución normal, con el p1 = cantidad de tiempos de vuelo, de 1000 vuelos de JFK a MIA y p2 = cantidad de tiempo de vuelo de 1000 vuelos de JFK a RDU, se obtuvo un intervalo de confianza de: ]-0.5324788, -0.4976582[; con un nivel de confianza del 95%.
 
-Intercambiando los éxitos y los p estimadores, se obtiene un intervalo de confianza  ]0.4976582, 0.5324788[; con un nivel de significancia del 95%.
+Intercambiando los éxitos y los p estimadores, se obtiene un intervalo de confianza  ]0.4976582, 0.5324788[; con un nivel de confianza del 95%.
 
-En conclusión, se destaca que proporción para p2 estimador es mayor, ya que al aplicar las diferencias se obtienen
+En conclusión, se destaca que proporción para p2 es mayor, ya que al aplicar las diferencias se obtienen
 resultados negativos y al intercambiar p1 estimador por p2 estimador se obtienen resultados positivos, por ende, el valor de p2 estimador es mayor. Y no se puede asumir una igualdad de proporciones, ya que, el 0 no se encuentra en los intervalos.
 
 - \n
@@ -348,10 +347,10 @@ Para la última prueba con dos poblaciones se utiliza un nivel de confianza del 
 
 ### **Resultados**
 ```{r}
-#En la siguiente asignación se toman los n cantidad de vuelos que salen de JFK y tienen como destino MIA, y guarda en var1 sólo los vuelos con dichas características.
+#En la siguiente asignación se toman la cantidad de tiempo de aire de los vuelos que salen de JFK y tienen como destino MIA, y guarda en var1 sólo los vuelos con dichas características.
 var1 <- dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "MIA", ]
 
-#Estos son los n cantidad de vuelos que salen de JFK y tienen como destino RDU
+#Esta es la cantidad de tiempo de aire de los vuelos que salen de JFK y tienen como destino RDU
 var2 <- dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "RDU", ]
 
 #Para la siguiente función se le pasa la columna de air_time de ambas variables y por último el nivel de confianza.
@@ -361,10 +360,10 @@ stests:: var.test( na.omit(var1$air_time),  na.omit(var2$air_time), conf.level =
 - \n
 
 ### **Conclusión**
-Al realizar los respectivos cálculos de las dos poblaciones con la distribución f, para cociente de varianzas, se obtuvo un intervalo de confianza de: ]2.862129, 3.293065[, con un nivel de significancia del 95%.
+Al realizar los respectivos cálculos de las dos poblaciones con la distribución f, para cociente de varianzas, se obtuvo un intervalo de confianza de: ]2.862129, 3.293065[, con un nivel de confianza del 95%.
 
-En conclusión con los resultados obtenidos, la varianza del numerador es mayor a la varianza del denominador.
-No se puede asumir igualdad de varianzas, ya que el 1 no se encuentra en los intervalos.
+En conclusión, con los resultados obtenidos, la varianza del numerador, que representa a la cantidad de tiempo de aire de los vuelos que tienen como origen JFK y destino MIA es mayor a la varianza del denominador, que es la cantidad de tiempo de aire de los vuelos con el mismo origen, pero con destino en RDU.
+Por ende, no se puede asumir igualdad de varianzas, ya que el 1 no se encuentra en los intervalos.
 
 \newpage
 - \n
@@ -373,14 +372,25 @@ No se puede asumir igualdad de varianzas, ya que el 1 no se encuentra en los int
 ###  Análisis Inferencial (pruebas de hipótesis de una y dos poblaciones)
 - \n
 
-# Pruebas de intervalos de confianza para una población
+### Resumen de variables seleccionadas
+
+#### La siguiente variable fue utilizada para una y dos poblaciones, en donde se utilizaba la duración en aire de un destino al otro.
+
+![Variables para una población y dos poblaciones](resumenVariablesEstadistica.png)
+
+\newpage
+
+# Pruebas de hipótesis para una población
 
 - \n
 
-## **Distribución normal Z**
+## **Distribución normal**
 
-En la siguiente prueba se procederá a realizar las respectivas procedimientos con la distribución normal z, en la cual se tomará un nivel de confianza del 95%.
-Se tomaron datos de una población con un comportamiento normal. Se tomaron los tiempos en vuelo de todos los vuelos de origen JFK y destino MIA, este es el valor de 'x' en la función. Para el valor del sigma.x se tomó la desviación estándar de esos tiempos en aire de los vuelos y el conf.level significa el nivel de confianza para el intervalo, que es nuestro caso es de 95%. Para esta prueba se usó la librería 'TeachingDemos'.
+En la siguiente prueba se procederá a realizar los respectivos procedimientos con la distribución normal estándar, en la cuál se tomará un nivel de significancia del 95%.
+Se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA, sobre el cuál se quiere estimar que el promedio de vuelo es igual a 120 minutos. Para esto se plantean las siguientes hipótesis:   $$H_0: \mu = 120 \\
+H_1: \mu \neq 120$$
+Seguidamente, para validar lo planteado anteriormente, se realizará una prueba de hipótesis para promedio de una población, utilizando un nivel de confianza de 95%
+que es para elegir si queremos cola izquierda, cola derecha o dos colas; para este caso se usará una prueba de dos colas dado que el tamaño de muestra es mayor que 30.
 
 - \n
 
@@ -392,7 +402,7 @@ var1 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "MIA"
 
 #En esta variable se trabaja con el tiempo en el aire de el origen y destino seleccionado anterionrmente
 
-#Se procede a aplicar la función de PASWR2, en la cual se le pasan como parametros la lista de tiempos, la desviación estandar y por último el nivel de significancia.
+#Se procede a aplicar la función de TeachingDemos, en la cuál se le pasan como parametros la lista de tiempos, la desviación estandar, el párametro y el tipo de prueba.
 TeachingDemos::z.test(var1, sd(var1),mu = 120,alternative = "two.sided")
 
 ```
@@ -400,13 +410,16 @@ TeachingDemos::z.test(var1, sd(var1),mu = 120,alternative = "two.sided")
 - \n
 
 ### **Conclusión**
-Al realizar los respectivos cálculos de la distribución normal z con '3285'que es cantidad de tiempos de vuelos con origen JFK y destino a MIA se obtuvo un intervalo de confianza de: ]151.7496, 152.5103[.
+
 
 - \n
 
 ## **Distribución T**
 
-En la siguiente prueba se procederá a realizar los respectivos cálculos con la distribución TStudent, en la cual se tomará un nivel de confianza del 95%. Esta distribución debe tener un n < 30, por lo que se tomaron los primeros 25 datos de la columna de *air_time* para dicha prueba. Cabe destacar que la población presenta un compartamiento normal. Para esta prueba se usó la librería 'stats'.
+En la siguiente prueba se procederá a realizar los respectivos procedimientos con la distribución TStudent, en la cuál se tomará un nivel de significancia del 95%.
+Se tomó una muestra con un tamaño de 25 correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA, sobre el cuál se quiere estimar que el promedio de vuelo es menor a 120 minutos. Para esto se plantean las siguientes hipótesis:   $$H_0: \mu = 120(\ge) \\
+H_1: \mu < 120$$
+Seguidamente, para validar lo planteado anteriormente, se realizará una prueba de hipótesis para promedio de una población, utilizando un nivel de confianza de 95%, eligiremos si la prueba va a ser de cola izquierda, cola derecha o dos colas; para este caso se usará una prueba de cola izquierda.
 
 - \n
 
@@ -424,14 +437,17 @@ stats::t.test(var1,mu = 120, alternative = "less" )
 - \n
 
 ### **Conclusión**
-Al realizar los respectivos cálculos de la distribución TStudent con un muestra de 25 datos de tiempos de vuelo, con origen JFK a destino MIA se obtuvo un intervalo de confianza de: ]146.9743, 157.1857[.
+
 
 
 - \n
 
 ## **Una proporción**
 
-Para realizar el respectivo cálculo de la proporción de tiempos de vuelo se tomaron todos los vuelos menores o iguales que 150, en la cual se tomará un nivel de confianza del 95%. La población sería los tiempos de vuelos, y como "éxitos" los vuelos con un tiempo de vuelo menor a 150. La población se comporta de manera normal. Cabe destacar que para esta prueba se usó la librería 'stats'.
+En la siguiente prueba se procederá a realizar los respectivos procedimientos con la distribución normal estándar, en la cuál se tomará un nivel de significancia del 95%.
+Se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA, sobre el cuál se quiere estimar que, como máximo el 50% de los vuelos tienen un tiempo de vuelo menor a 150 minutos . Para esto se plantean las siguientes hipótesis:   $$H_0: p = 0.5(\le) \\
+H_1: p > 0.5$$
+Seguidamente, para validar lo planteado anteriormente, se realizará una prueba de hipótesis para una proporción de una población que sigue una distribución normal, utilizando un nivel de confianza de 95%, eligiremos si la prueba va a ser de cola izquierda, cola derecha o dos colas; para este caso se usará una prueba de cola derecha.
 
 - \n
 
@@ -449,22 +465,33 @@ var1 <- na.omit(var1$air_time)
 
 #Se obtiene la cantidad total de éxitos de la variable anterior éxitos
 totalExitos <- length(exitos$air_time)
+p = totalExitos/length(var1)
+q= 1-p
 
+n1 = p * length(var1)
+n2 = q * length(var1)
+n1
+n2
+
+#El n multiplicado por el p mayor que 5, muestra grande. También con la q
 
 #Para obtener la proporción se procede a ingresar el total de éxitos, el total de todas las variables y por último el nivel de confianza
-stats::binom.test(totalExitos, length(var1),p = 0.5,alternative = "greater", conf.level = 0.95)
+stats::prop.test(totalExitos, length(var1),p = 0.5,alternative = "greater", conf.level = 0.95)
 
 ```
 
 - \n
 
 ### **Conclusión**
-Al realizar los respectivos cálculos de la proporción con la cantidad de tiempos de vuelos de origen JFK a destino MIA menores a 100 minutos, se obtuvo un intervalo de confianza de: ]0.4677168, 0.5021818[.
+
 
 - \n
 ## **Varianza**
 
-En la última prueba para una población, se procede a realizar los cálculos con un intervalo de confianza del 95%, en la cual se utiliza la cantidad total de las variables *air_time* para una mejor estimación. Para realizar la siguiente estimación del intervalo de confianza se tomó una población que sigue una distribución normal. Cabe resaltar que para esta prueba se usó la librería 'stests'.
+En la siguiente prueba se procederá a realizar los respectivos procedimientos con la distribución Chi-Square, en la cuál se tomará un nivel de significancia del 95%.
+Se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA, sobre el cuál se quiere contrastar que la varianza del tiempo de aire los vuelos es menor que 0.6. Para esto se plantean las siguientes hipótesis:   $$H_0: \sigma^2 = 0.6(\ge) \\
+H_1: \sigma^2 < 0.6$$
+Seguidamente, para validar lo planteado anteriormente, se realizará una prueba de hipótesis para una varianza de una población que sigue una distribución normal, utilizando un nivel de confianza de 95%, eligiremos si la prueba va a ser de cola izquierda, cola derecha o dos colas; para este caso se usará una prueba de cola izquierda.
 
 - \n
 
@@ -474,14 +501,14 @@ En la última prueba para una población, se procede a realizar los cálculos co
 var1 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "MIA", ]$air_time)
 
 #En la siguiente función de stests se procede a igresar la lista de los tiempos y luego el nivel de confianza
-TeachingDemos:: sigma.test(var1, sigma = 80,alternative = "less", conf.level = 0.95)
+TeachingDemos:: sigma.test(var1, sigmasq = 0.6,alternative = "less", conf.level = 0.95)
 
 ```
 
 - \n
 
 ### **Conclusión**
-Al realizar los respectivos cálculos de la variancia con un intervalo de confianza  del 95% para los tiempos de vuelos de origen JFK a destino MIA se obtuvo un intervalo de confianza de: ]117.9459 129.9276[.
+
 
 
 - \n
@@ -489,11 +516,13 @@ Al realizar los respectivos cálculos de la variancia con un intervalo de confia
 
 # Pruebas de hipótesis para dos poblaciones
 
-- \n
 
-## **Una diferencia de promedios usando distribución Z para dos poblaciones**
+## **Una diferencia de promedios usando distribución normal estándar para dos poblaciones**
 
-En la siguiente prueba se procederá a realizar los respectivos análisis con la distribución normal z, en la cual se tomará un nivel de confianza del 95%. Para dicha prueba se toman dos diferentes poblaciones, cada población tiene un mismo origen y destinos distintos. Ambas poblaciones siguen un comportamiento normal. Para esta prueba se usó la librería 'BSDA'.
+En la siguiente prueba se procederá a realizar los respectivos procedimientos con la distribución normal estándar, en la cuál se tomará un nivel de significancia del 95%.
+Se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA como el primer promedio, luego del mismo modo, se tomaron datos correspondientes  al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA, como segundo promedio.Se quiere estimar que la diferencia de los promedios de los vuelos es igual a 0 minutos. Para esto se plantean las siguientes hipótesis:   $$H_0: \mu_1 -\mu_2 = 0 \\
+H_1: \mu_1 -\mu_2 \neq 0$$
+Seguidamente, para validar lo planteado anteriormente, se realizará una prueba de hipótesis para una diferencia de promedios de dos poblaciones, utilizando un nivel de confianza de 95% que es para elegir si queremos cola izquierda, cola derecha o dos colas; para este caso se usará una prueba de dos colas dado que el tamaño de las muestras es mayor que 30.
 
 - \n
 
@@ -506,21 +535,22 @@ prueba1 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "M
 prueba2 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "RDU", ]$air_time)
 
 #Para la respectiva prueba se ingresan como para metros la primera población, luego la segunda, seguidamente la desviación estandar de cada una, en el mismo orden y por último el nivel de confianza
-PASWR2:: z.test(prueba1, sigma.x = sd(prueba1),prueba2, sigma.y = sd(prueba2),alternative = "two.sided", mu = 120)
+PASWR2:: z.test(prueba1, sigma.x = sd(prueba1),prueba2, sigma.y = sd(prueba2),alternative = "two.sided")
 ```
 
 - \n
 
 ### **Conclusión**
-Al realizar los respectivos cálculos de las dos poblaciones con la distribucion normal z, con un n1 = cantidad de tiempos de vuelos de JFK a MIA y un n2 = cantidad de tiempos de vuelos de JFK a RDU. Para dicha prueba se obtuvo un intervalo de confianza de: ]79.82943, 80.71615[; con un nivel de significancia del 95%.
 
-En conclusión, el valor de la primera población *prueba1* es mayor, ya que los valores de los intervalos de confianza son mayores, por ende, no se puede asumir una igualdad de medias, porque el 0 no está presente.
 
 - \n
 
 ## **Diferencia de promedios utilizando distribución T para dos poblaciones**
 
-En la siguiente prueba se procederá a realizar los respectivos cálculos con la distribución T, en la cual se tomará un nivel de confianza del 95%. Esta distribución debe tener un n < 30, por lo que se tomaron 25 datos aleatorios en ambas poblaciones de la columna de *air_time* para dicha prueba. Las poblaciones que contienen las dos muestra siguen una distribución normal. Para esta prueba se usó la librería 'stats'.
+En la siguiente prueba se procederá a realizar los respectivos procedimientos con la distribución TStudent, en la cuál se tomará un nivel de significancia del 95%.
+Se tomó una muestra con un tamaño de 25 correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA para la primera población, del mismo modo se tomó una muestra con un tamaño de 25 correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en RDU para la segunda población, sobre las cuáles se pretende estimar que la diferencia de los promedios de los vuelo es igual a 0 minutos. Para esto se plantean las siguientes hipótesis:   $$H_0: \mu_1 -\mu_2 = 0 \\
+H_1: \mu_1 -\mu_2 \neq 0$$
+Seguidamente, para validar lo planteado anteriormente, se realizará una prueba de hipótesis para diferencia de promedios de dos poblaciones, utilizando un nivel de confianza de 95%, eligiremos si la prueba va a ser de cola izquierda, cola derecha o dos colas; para este caso se usará una prueba de dos colas. 
 
 - \n
 
@@ -537,24 +567,28 @@ prueba1 <- sample(x = var1, size = 40, replace = TRUE)
 
 #Se extraen aleatoriamente 25 datos como muestra de la segunda poblacion
 prueba2 <- sample(x = var2, size = 40, replace = TRUE)
+var.test(prueba1, prueba2)
+#Varianzas diferentes, se trabaja con varianzas diferente. Caso 2 o Caso 3
+
 
 #Para esta función solamente se ingresan las pruebas y el nivel de confianza.
-stats::t.test(prueba1, prueba2, alternative = "two.sided", var.equal = TRUE)
+stats::t.test(prueba1, prueba2, alternative = "two.sided", var.equal = FALSE)
 
 ```
 
 - \n
 
 ### **Conclusión**
-Al realizar los respectivos cálculos de las dos muestras de las poblaciones con la distribución tStudent, con el n1 = 25 y n2 = 25 tiempos de vuelo de los vuelos de origen JFK a destino MIA y de origen  JFK a destino RDU, se obtuvo un intervalo de confianza de: ]75.78145, 84.13855[; con un nivel de significancia del 95%.
 
-En conclusión, el valor de la primera muestra es mayor, ya que los resultados de los intervalos de confianza son positivos, por ende, no se asume igualdad, ya que, el cero no está presente.
 
 - \n
 
 ## **Diferencia de proporciones para dos poblaciones**
 
-En esta prueba se trabaja con el tiempo en el aire del origen y del destino seleccionados en el siguiente código para ambas poblaciones, donde se seleccionan los viajes menores o iguales a 150 minutos como los 'éxitos'. Para la respectiva prueba se utiliza un nivel de confianza de 95%. Para la estimación del intervalo de confianza se tomaron dos poblaciones en las que ambas siguen un comportamiento normal. Para esta prueba se usó la librería 'stats'.
+En la siguiente prueba se procederá a realizar los respectivos procedimientos con la distribución normal estándar, en la cuál se tomará un nivel de significancia del 95%.
+Se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA como primera población, del mismo modo se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en RDU como segunda población , sobre el cuál se quiere estimar que, la proporción de tiempo de aire de los vuelos de JFK a MIA es la misma que la proporción de tiempo de aire de los vuelos de JFK a RDU. Para esto se plantean las siguientes hipótesis:   $$H_0: p_1 -p_2 = 0 \\
+H_1: p_1 -p_2 \neq 0$$
+Seguidamente, para validar lo planteado anteriormente, se realizará una prueba de hipótesis para una diferencia de proporciones de dos poblaciones que se asume que siguen un comportamiento normal, utilizando un nivel de confianza de 95%, eligiremos si la prueba va a ser de cola izquierda, cola derecha o dos colas; para este caso se usará una prueba de dos colas.
 
 - \n
 
@@ -582,18 +616,16 @@ stats::prop.test(x = c(exitoP2, exitoP1), n = c(length(prueba2), length(prueba1)
 - \n
 
 ### **Conclusión**
-Al realizar los respectivos cálculos de las dos poblaciones con la distribución normal, con el p1 = cantidad de tiempos de vuelo, de 1000 vuelos de JFK a MIA y p2 = cantidad de tiempo de vuelo de 1000 vuelos de JFK a RDU, se obtuvo un intervalo de confianza de: ]-0.5324788, -0.4976582[; con un nivel de significancia del 95%.
 
-Intercambiando los éxitos y los p estimadores, se obtiene un intervalo de confianza  ]0.4976582, 0.5324788[; con un nivel de significancia del 95%.
-
-En conclusión, se destaca que proporción para p2 estimador es mayor, ya que al aplicar las diferencias se obtienen
-resultados negativos y al intercambiar p1 estimador por p2 estimador se obtienen resultados positivos, por ende, el valor de p2 estimador es mayor. Y no se puede asumir una igualdad de proporciones, ya que, el 0 no se encuentra en los intervalos.
 
 - \n
 
 ## **Cociente de variancias de dos poblaciones**
 
-Para la última prueba con dos poblaciones se utiliza un nivel de confianza del 95%.Para realizar los siguientes cálculos se tomaron dos poblaciones en la cuales ambas siguen una distribución normal. Para la primera población se dispuso del tiempo de vuelo de los vuelos con origen JFK y con destino MIA, y para la segunda, lo mismo nada más que el destino es RDU. Para esta prueba se usó la librería 'stests'.
+En la siguiente prueba se procederá a realizar los respectivos procedimientos con la distribución F, en la cuál se tomará un nivel de significancia del 95%.
+Se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA como primer población, del mismo modo se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en RDU como segunda población, sobre el cuál se quiere contrastar igualdad en las varianzas. Para esto se plantean las siguientes hipótesis:   $$H_0: \frac{\sigma^2_1}{\sigma^2_2} = r_0 \\
+H_1: \frac{\sigma^2_1}{\sigma^2_2} \neq r_0$$
+Seguidamente, para validar lo planteado anteriormente, se realizará una prueba de hipótesis para un cociente de varianzas de dos poblaciones que sigue una distribución normal, utilizando un nivel de confianza de 95%, eligiremos si la prueba va a ser de cola izquierda, cola derecha o dos colas; para este caso se usará una prueba de dos colas.
 
 - \n
 
@@ -612,10 +644,7 @@ stests:: var.test( na.omit(var1$air_time),  na.omit(var2$air_time))
 - \n
 
 ### **Conclusión**
-Al realizar los respectivos cálculos de las dos poblaciones con la distribución f, para cociente de varianzas, se obtuvo un intervalo de confianza de: ]2.862129, 3.293065[, con un nivel de significancia del 95%.
 
-En conclusión con los resultados obtenidos, la varianza del numerador es mayor a la varianza del denominador.
-No se puede asumir igualdad de varianzas, ya que el 1 no se encuentra en los intervalos.
 
 
 
