@@ -425,6 +425,7 @@ Seguidamente, para validar lo planteado anteriormente, se realizará una prueba 
 
 ### **Resultados**
 ```{r}
+
 #En la siguiente asignación se toman las n cantidad de vuelos que salen de JFK y tienen como destino MIA, y guarda en var1 sólo los vuelos con dichas características.
 
 #En esta variable se trabaja con el tiempo (air-time) en el aire de el origen y destino seleccionados el cual se van a utlizar 25 datos de manera random
@@ -489,8 +490,8 @@ stats::prop.test(totalExitos, length(var1),p = 0.5,alternative = "greater", conf
 ## **Varianza**
 
 En la siguiente prueba se procederá a realizar los respectivos procedimientos con la distribución Chi-Square, en la cuál se tomará un nivel de significancia del 95%.
-Se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA, sobre el cuál se quiere contrastar que la varianza del tiempo de aire los vuelos es menor que 0.6. Para esto se plantean las siguientes hipótesis:   $$H_0: \sigma^2 = 0.6(\ge) \\
-H_1: \sigma^2 < 0.6$$
+Se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA, sobre el cuál se quiere contrastar que la varianza del tiempo de aire los vuelos es menor que 0.6. Para esto se plantean las siguientes hipótesis:   $H_0: \sigma^2 = 0.6(\ge) \\$
+$H_1: \sigma^2 < 0.6$
 Seguidamente, para validar lo planteado anteriormente, se realizará una prueba de hipótesis para una varianza de una población que sigue una distribución normal, utilizando un nivel de confianza de 95%, eligiremos si la prueba va a ser de cola izquierda, cola derecha o dos colas; para este caso se usará una prueba de cola izquierda.
 
 - \n
@@ -520,8 +521,9 @@ TeachingDemos:: sigma.test(var1, sigmasq = 0.6,alternative = "less", conf.level 
 ## **Una diferencia de promedios usando distribución normal estándar para dos poblaciones**
 
 En la siguiente prueba se procederá a realizar los respectivos procedimientos con la distribución normal estándar, en la cuál se tomará un nivel de significancia del 95%.
-Se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA como el primer promedio, luego del mismo modo, se tomaron datos correspondientes  al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA, como segundo promedio.Se quiere estimar que la diferencia de los promedios de los vuelos es igual a 0 minutos. Para esto se plantean las siguientes hipótesis:   $$H_0: \mu_1 -\mu_2 = 0 \\
-H_1: \mu_1 -\mu_2 \neq 0$$
+Se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA como el primer promedio, luego del mismo modo, se tomaron datos correspondientes  al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA, como segundo promedio.Se quiere estimar que la diferencia de los promedios de los vuelos es igual a 0 minutos. Para esto se plantean las siguientes hipótesis:   $H_0: \mu_1 -\mu_2 = 0 \\$
+\n
+$H_1: \mu_1 -\mu_2 \neq 0$
 Seguidamente, para validar lo planteado anteriormente, se realizará una prueba de hipótesis para una diferencia de promedios de dos poblaciones, utilizando un nivel de confianza de 95% que es para elegir si queremos cola izquierda, cola derecha o dos colas; para este caso se usará una prueba de dos colas dado que el tamaño de las muestras es mayor que 30.
 
 - \n
@@ -535,7 +537,8 @@ prueba1 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "M
 prueba2 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "RDU", ]$air_time)
 
 #Para la respectiva prueba se ingresan como para metros la primera población, luego la segunda, seguidamente la desviación estandar de cada una, en el mismo orden y por último el nivel de confianza
-PASWR2:: z.test(prueba1, sigma.x = sd(prueba1),prueba2, sigma.y = sd(prueba2),alternative = "two.sided")
+
+PASWR2::z.test(prueba1, sigma.x = sd(prueba1),prueba2, sigma.y = sd(prueba2),alternative = "two.sided")
 ```
 
 - \n
@@ -548,8 +551,9 @@ PASWR2:: z.test(prueba1, sigma.x = sd(prueba1),prueba2, sigma.y = sd(prueba2),al
 ## **Diferencia de promedios utilizando distribución T para dos poblaciones**
 
 En la siguiente prueba se procederá a realizar los respectivos procedimientos con la distribución TStudent, en la cuál se tomará un nivel de significancia del 95%.
-Se tomó una muestra con un tamaño de 25 correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA para la primera población, del mismo modo se tomó una muestra con un tamaño de 25 correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en RDU para la segunda población, sobre las cuáles se pretende estimar que la diferencia de los promedios de los vuelo es igual a 0 minutos. Para esto se plantean las siguientes hipótesis:   $$H_0: \mu_1 -\mu_2 = 0 \\
-H_1: \mu_1 -\mu_2 \neq 0$$
+Se tomó una muestra con un tamaño de 25 correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA para la primera población, del mismo modo se tomó una muestra con un tamaño de 25 correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en RDU para la segunda población, sobre las cuáles se pretende estimar que la diferencia de los promedios de los vuelo es igual a 0 minutos. Para esto se plantean las siguientes hipótesis:   $H_0: \mu_1 -\mu_2 = 0 \\$
+\n 
+$H_1: \mu_1 -\mu_2 \neq 0$
 Seguidamente, para validar lo planteado anteriormente, se realizará una prueba de hipótesis para diferencia de promedios de dos poblaciones, utilizando un nivel de confianza de 95%, eligiremos si la prueba va a ser de cola izquierda, cola derecha o dos colas; para este caso se usará una prueba de dos colas. 
 
 - \n
@@ -557,6 +561,7 @@ Seguidamente, para validar lo planteado anteriormente, se realizará una prueba 
 ### **Resultados**
 ```{r}
 #En la siguiente asignación se toman los n cantidad de vuelos que salen de JFK y tienen como destino MIA, y guarda en var1 sólo los vuelos con dichas características.
+set.seed(2021)
 var1 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "MIA", ]$air_time)
 
 #Estos son los n cantidad de vuelos que salen de JFK y tienen como destino RDU
@@ -572,7 +577,7 @@ var.test(prueba1, prueba2)
 
 
 #Para esta función solamente se ingresan las pruebas y el nivel de confianza.
-stats::t.test(prueba1, prueba2, alternative = "two.sided", var.equal = FALSE)
+stats::t.test(prueba1, prueba2, alternative = "two.sided", var.equal = TRUE)
 
 ```
 
@@ -586,8 +591,8 @@ stats::t.test(prueba1, prueba2, alternative = "two.sided", var.equal = FALSE)
 ## **Diferencia de proporciones para dos poblaciones**
 
 En la siguiente prueba se procederá a realizar los respectivos procedimientos con la distribución normal estándar, en la cuál se tomará un nivel de significancia del 95%.
-Se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA como primera población, del mismo modo se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en RDU como segunda población , sobre el cuál se quiere estimar que, la proporción de tiempo de aire de los vuelos de JFK a MIA es la misma que la proporción de tiempo de aire de los vuelos de JFK a RDU. Para esto se plantean las siguientes hipótesis:   $$H_0: p_1 -p_2 = 0 \\
-H_1: p_1 -p_2 \neq 0$$
+Se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA como primera población, del mismo modo se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en RDU como segunda población , sobre el cuál se quiere estimar que, la proporción de tiempo de aire de los vuelos de JFK a MIA es la misma que la proporción de tiempo de aire de los vuelos de JFK a RDU. Para esto se plantean las siguientes hipótesis:   $H_0: p_1 -p_2 = 0 \\$
+$H_1: p_1 -p_2 \neq 0$
 Seguidamente, para validar lo planteado anteriormente, se realizará una prueba de hipótesis para una diferencia de proporciones de dos poblaciones que se asume que siguen un comportamiento normal, utilizando un nivel de confianza de 95%, eligiremos si la prueba va a ser de cola izquierda, cola derecha o dos colas; para este caso se usará una prueba de dos colas.
 
 - \n
@@ -598,19 +603,26 @@ Seguidamente, para validar lo planteado anteriormente, se realizará una prueba 
 prueba1 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "MIA", ]$air_time)
 
 #Estos son los n cantidad de vuelos que salen de JFK y tienen como destino RDU
-prueba2 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "RDU", ]$air_time)
+prueba2 <- na.omit(dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "ORD", ]$air_time)
 
 
 #El length de p1 y p2 son los exitos de los vuelos que tienen un tiempo menor o igual a 150
 exitoP1 <- length(which(prueba1 <= 150))
 exitoP2 <- length(which(prueba2 <= 150))
+n1 <- exitoP1/length(prueba1)
+n2 <- exitoP2/length(prueba2)
+nxp <- n1 * length(prueba1)
+n2xp <- n2 * length(prueba2)
+nxp
+n2xp
 
 #Usando la funcion de prop.test se sacan los intervalos de confianza respectivos, primero con los
 #exitos de la población 1 y su respectivo tamaño, y segundo con la poblacion 2
 stats::prop.test(x = c(exitoP1, exitoP2), n = c(length(prueba1), length(prueba2)))
 #Usando la funcion de prop.test se sacan los intervalos de confianza respectivos, primero con los
 #exitos de la poblacion 2 y su respectivo tamaño, y segundo con la poblacion 1
-stats::prop.test(x = c(exitoP2, exitoP1), n = c(length(prueba2), length(prueba1)))
+#stats::prop.test(x = c(exitoP2, exitoP1), n = c(length(prueba2), length(prueba1)))
+
 ```
 
 - \n
@@ -623,8 +635,9 @@ stats::prop.test(x = c(exitoP2, exitoP1), n = c(length(prueba2), length(prueba1)
 ## **Cociente de variancias de dos poblaciones**
 
 En la siguiente prueba se procederá a realizar los respectivos procedimientos con la distribución F, en la cuál se tomará un nivel de significancia del 95%.
-Se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA como primer población, del mismo modo se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en RDU como segunda población, sobre el cuál se quiere contrastar igualdad en las varianzas. Para esto se plantean las siguientes hipótesis:   $$H_0: \frac{\sigma^2_1}{\sigma^2_2} = r_0 \\
-H_1: \frac{\sigma^2_1}{\sigma^2_2} \neq r_0$$
+Se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA como primer población, del mismo modo se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en RDU como segunda población, sobre el cuál se quiere contrastar igualdad en las varianzas. Para esto se plantean las siguientes hipótesis:   $H_0: \frac{\sigma^2_1}{\sigma^2_2} = 1 \\$
+\n
+$H_1: \frac{\sigma^2_1}{\sigma^2_2} \neq 1$
 Seguidamente, para validar lo planteado anteriormente, se realizará una prueba de hipótesis para un cociente de varianzas de dos poblaciones que sigue una distribución normal, utilizando un nivel de confianza de 95%, eligiremos si la prueba va a ser de cola izquierda, cola derecha o dos colas; para este caso se usará una prueba de dos colas.
 
 - \n
@@ -639,6 +652,7 @@ var2 <- dataFlight[dataFlight$origin == "JFK" & dataFlight$dest == "RDU", ]
 
 #Para la siguiente función se le pasa la columna de air_time de ambas variables y por último el nivel de confianza.
 stests:: var.test( na.omit(var1$air_time),  na.omit(var2$air_time))
+
 ```
 
 - \n
