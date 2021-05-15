@@ -593,7 +593,7 @@ stats::t.test(prueba1, prueba2, alternative = "two.sided", var.equal = FALSE)
 ## **Diferencia de proporciones para dos poblaciones**
 
 En la siguiente prueba se procederá a realizar los respectivos procedimientos con la distribución normal estándar, en la cuál se tomará un nivel de significancia del 95%.
-Se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA como primera población, del mismo modo se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en RDU como segunda población , sobre el cuál se quiere estimar que, la proporción de tiempo de aire de los vuelos de JFK a MIA es la misma que la proporción de tiempo de aire de los vuelos de JFK a RDU. Para esto se plantean las siguientes hipótesis:   $H_0: p_1 -p_2 = 0 \\$
+Se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA como primera población, del mismo modo se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en RDU como segunda población , sobre el cuál se quiere estimar que, la diferencia de la proporción de tiempo de aire de los vuelos de JFK a ORD con la proporción de tiempo de aire de los vuelos de JFK a RDU es igual a 0. Para esto se plantean las siguientes hipótesis:   $H_0: p_1 -p_2 = 0 \\$
 $H_1: p_1 -p_2 \neq 0$
 Seguidamente, para validar lo planteado anteriormente, se realizará una prueba de hipótesis para una diferencia de proporciones de dos poblaciones que se asume que siguen un comportamiento normal, utilizando un nivel de confianza de 95%, eligiremos si la prueba va a ser de cola izquierda, cola derecha o dos colas; para este caso se usará una prueba de dos colas.
 
@@ -634,7 +634,7 @@ stats::prop.test(x = c(exitoP1, exitoP2), n = c(length(prueba1), length(prueba2)
 
 - \n
 
-## **Cociente de variancias de dos poblaciones**
+## **Cociente de varianzas de dos poblaciones**
 
 En la siguiente prueba se procederá a realizar los respectivos procedimientos con la distribución F, en la cuál se tomará un nivel de significancia del 95%.
 Se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA como primer población, del mismo modo se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en RDU como segunda población, sobre el cuál se quiere contrastar igualdad en las varianzas. Para esto se plantean las siguientes hipótesis:   $H_0: \frac{\sigma^2_1}{\sigma^2_2} = 1 \\$
