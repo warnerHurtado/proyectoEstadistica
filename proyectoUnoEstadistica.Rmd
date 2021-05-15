@@ -390,6 +390,7 @@ Para la realización de este análisis con las pruebas de hipótesis se utilizar
 
 En la siguiente prueba se procederá a realizar los respectivos procedimientos con la distribución normal estándar, en la cuál se tomará un nivel de significancia del 95%.
 Se tomaron datos correspondientes al tiempo de vuelo de los vuelos con origen en JFK y con destino en MIA, sobre el cuál se quiere estimar que el promedio de vuelo es igual a 120 minutos. Para esto se plantean las siguientes hipótesis:   $H_0: \mu = 120 \\$
+- \n
 $H_1: \mu \neq 120$
 Seguidamente, para validar lo planteado anteriormente, se realizará una prueba de hipótesis para promedio de una población, utilizando un nivel de confianza de 95%
 que es para elegir si queremos cola izquierda, cola derecha o dos colas; para este caso se usará una prueba de dos colas dado que el tamaño de muestra es mayor que 30.
