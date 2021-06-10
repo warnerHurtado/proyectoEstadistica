@@ -49,6 +49,7 @@ devtools::install_github('fhernanb/stests', force=TRUE)
 
 ```{r}
 library(nycflights13)
+library(mosaicData)
 
 library(PASWR2)
 
@@ -67,11 +68,13 @@ library(datos)
 
 data("flights")
 
+mosaicData <- mosaicData::KidsFeet
+
 dataFlight <- flights
 dataDiamonds <- ggplot2::diamonds
 
 dataFlight
-dataDiamonds
+mosaicData
 
 
 #if (!require('devtools')) install.packages('devtools')
@@ -670,70 +673,82 @@ stests:: var.test( na.omit(var1$air_time),  na.omit(var2$air_time))
 ### **Conclusión**
 
 
+# **Fase III**
 
-
-```{r}
-var1 <- na.omit(dataFlight[dataFlight$origin == "JFK",]$air_time)
-var2 <- na.omit(dataFlight[dataFlight$origin == "EWR",]$air_time)
-var3 <- na.omit(dataFlight[dataFlight$origin == "LGA",]$air_time)
-length(var1)
-length(var2)
-length(var3)
-frecuenciasEmpiricas <- c(var1,var2,var3)
-stats::chisq.test(frecuenciasEmpiricas)
-```
-
-```{r}
-var2 <- na.omit(dataFlight[dataFlight$origin == "LGA",]$air_time)
-length(var2)
-prom <- mean(var2)
-prom
-varianza <- sd(var2)
-varianza
-freq1 <- length(which(var2 < 100))
-freq2 <- length(which(var2 <= 100& var2< 120)) 
-freq3 <- length(which(var2 <=120 &var2 < 140)) 
-freq4 <- length(which(var2 <= 140 & var2 < 160)) 
-freq5 <- length(which(var2 <= 160 & var2 < 180))
-freq6 <- length(which( var2 >= 180))
-freq1
-freq2
-freq3
-freq4
-freq5
-freq6
-
-
-extremos.izquierdos <- c(-Inf, 100, 120, 140, 160,180)
-extremos.derechos <- c(100, 120, 140, 160,180, Inf)
-frecuencias.empiricas <- c(freq1, freq2, freq3, freq4, freq5,freq6)
-probabilidades.teoricas <- pnorm(extremos.derechos, prom, varianza^2) - pnorm(extremos.izquierdos, prom, varianza^2)
-chisq.test(frecuencias.empiricas, p = probabilidades.teoricas)
-plot(density(var2), main="Estimación de la densidad")
-```
 - \n
-### **Prueba de independencia**
+
+## I PARTE: OTRAS PRUEBAS DE HIPÓTESIS EN R 
+
+- \n
+
+### **CASO 1: **
+
+
 ```{r}
-var1 <- na.omit(dataDiamonds[dataDiamonds$color == "J" & dataDiamonds$cut == "Very Good" & dataDiamonds$clarity=="VVS2",]$cut)
-length(var1)
-var2 <- na.omit(dataDiamonds[dataDiamonds$color == "J" & dataDiamonds$cut == "Good" & dataDiamonds$clarity=="SI2",]$cut)
-length(var2)
-var3 <- na.omit(dataDiamonds[dataDiamonds$color == "J" & dataDiamonds$cut == "Ideal" & dataDiamonds$clarity=="VS1",]$cut)
-length(var3)
-var4 <- na.omit(dataDiamonds[dataDiamonds$color == "J" & dataDiamonds$cut == "Very Good" & dataDiamonds$clarity=="SI2",]$cut)
-length(var4)
-var5 <- na.omit(dataDiamonds[dataDiamonds$color == "J" & dataDiamonds$cut == "Good" & dataDiamonds$clarity=="VS1",]$cut)
-length(var5)
-var6 <- na.omit(dataDiamonds[dataDiamonds$color == "J" & dataDiamonds$cut == "Ideal" & dataDiamonds$clarity=="VVS2",]$cut)
-length(var6)
-var7 <- na.omit(dataDiamonds[dataDiamonds$color == "J" & dataDiamonds$cut == "Very Good" & dataDiamonds$clarity=="VS1",]$cut)
-length(var7)
-var8 <- na.omit(dataDiamonds[dataDiamonds$color == "J" & dataDiamonds$cut == "Good" & dataDiamonds$clarity=="VVS2",]$cut)
-length(var8)
-var9 <- na.omit(dataDiamonds[dataDiamonds$color == "J" & dataDiamonds$cut == "Ideal" & dataDiamonds$clarity=="SI2",]$cut)
-length(var9)
-chisq.test(matrix(c(var1,var2,var3,var4,var5,var6,var7,var8,var9)),correct = T)
+
+feetLength <- split(mosaicData$length, mosaicData$sex)
+feetLength
+#Esta funcion lo que hace es separar los datos en dos grupos, estos grupos son separados por sexo: niño y niña. Lo que agrega a lo que extrae es es lo que le pasamo en el primer parámetro, en este caso el length.
+
 ```
+Para cada dataset (niños y niñas), se procederá a realizar un gráfico de la normalidad para cada uno, con el fin de analizar el comportamiento de los datos.
+
+- \n 
+
+## **Muestra de niños**
+
+- \n
+
+```{r}
+
+# Se toma la  mustra de solamente los niños
+muestra <- feetLength$B
+
+par(mfrow = c(1, 2)) # crea una matriz de tamaño 1x2 para imprimir dos gráficos de manera simultánea
+
+hist(muestra, main="Histograma niños")
+plot(density(muestra), main="Estimación niños")
+
+plot(density(muestra), main = "Estimación densidad")
+
+# Se generan valores para estimar la distribución normal de media y desviación estáandar igual a los datos de la muerta de feetLength de los niños
+
+#En el from y en el to se agregan un número menos al menor de los datos y un número mayor al de los datos.
+x <- seq(from = 21,to = 29, by = 0.01)
+u <- mean(feetLength$B)
+sigma <- sd(feetLength$B)
+lines(x, dnorm(x, mean = u, sd = sigma), col = "red")
+
+```
+- \n 
+
+## **Muestra de niñas**
+
+- \n
+```{r}
+
+# Se toma la  mustra de solamente las niñas
+muestra <- feetLength$G
+
+par(mfrow = c(1, 2)) # crea una matriz de tamaño 1x2 para imprimir dos gráficos de manera simultánea
+
+hist(muestra, main="Histograma niñas")
+plot(density(muestra), main="Densidad niñas")
+
+plot(density(muestra), main = "Estimación densidad")
+
+# Se generan valores para estimar la distribución normal de media y desviación estáandar igual a los datos de la muerta de feetLength de las niñas
+
+#En el from y en el to se agregan un número menos al menor de los datos y un número mayor al de los datos.
+x <- seq(from = 21,to = 29, by = 0.01)
+u <- mean(feetLength$G)
+sigma <- sd(feetLength$G)
+lines(x, dnorm(x, mean = u, sd = sigma), col = "red")
+
+```
+
+
+
 
 
 
