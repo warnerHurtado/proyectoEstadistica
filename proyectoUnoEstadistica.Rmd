@@ -65,6 +65,9 @@ library(MASS)
 library(TeachingDemos)
 library(ggplot2)
 library(datos)
+library(fBasics)
+library(nortest)
+library(EnvStats)
 
 data("flights")
 
@@ -681,7 +684,7 @@ stests:: var.test( na.omit(var1$air_time),  na.omit(var2$air_time))
 
 - \n
 
-### **CASO 1: **
+## **CASO 1: **
 
 
 ```{r}
@@ -701,7 +704,7 @@ Para cada dataset (niños y niñas), se procederá a realizar un gráfico de la 
 
 ```{r}
 
-# Se toma la  mustra de solamente los niños
+# Se toma la  muestra de solamente los niños
 muestra <- feetLength$B
 
 par(mfrow = c(1, 2)) # crea una matriz de tamaño 1x2 para imprimir dos gráficos de manera simultánea
@@ -711,23 +714,98 @@ plot(density(muestra), main="Estimación niños")
 
 plot(density(muestra), main = "Estimación densidad")
 
-# Se generan valores para estimar la distribución normal de media y desviación estáandar igual a los datos de la muerta de feetLength de los niños
+# Se generan valores para estimar la distribución normal de media y desviación estáandar de la lista de feetLength de los niños
 
 #En el from y en el to se agregan un número menos al menor de los datos y un número mayor al de los datos.
 x <- seq(from = 21,to = 29, by = 0.01)
-u <- mean(feetLength$B)
-sigma <- sd(feetLength$B)
+u <- mean(muestra)
+sigma <- sd(muestra)
 lines(x, dnorm(x, mean = u, sd = sigma), col = "red")
 
 ```
-- \n 
 
+## **¿Se puede intuir una posible normalidad para los datos?**
+
+- \n En el caso de los niños si se puede intuir una posible normalidad ya que como se puede apreciar en el gráfico anterior de la estimación de densidad es muy parecido el comportamiento de la línea color negro que representa los datos de los niños a la línea roja.
+
+- \n
+
+### Gráfico QQ-plot
+- \n
+```{r}
+u <- mean(muestra)
+sigma <- sd(muestra)
+
+EnvStats::qqPlot(muestra, y = NULL, distribution = "norm", param.list = list(mean = u, sd = sigma),
+     add.line = TRUE, 
+    points.col = 1, line.col = 100, line.lwd = par("cex"), line.lty = 1, 
+    digits = .Options$digits, main = NULL, xlab = "norm quantiles", ylab = "feetLengthBoys")
+
+
+```
+
+FALTA EL QQ-PLOT PORQUE MARCO ES UN IRRESPONSABLE Y NO LE HA PREGUNTADO AL PROFE NADA AÚN.
+
+
+- \n 
+### **Pruebas formales de normalidad S-W test, A-D test,K-S-L test.** 
+- \n
+
+### ***Test de Kolmogorov-Smirnov-Lilliefors o K-S-L test***
+```{r}
+lillie.test(muestra)
+```
+
+- \n
+En este caso la normalidad de los datos sí se acepta, esto porque el valor de p es mayor a 0.05. Por lo tanto, no hay suficiente evidencia en contra para no aceptar la normalidad de los datos.
+- \n
+
+### **Test de normalidad de Anderson-Darling o A-D test**
+```{r}
+ad.test(muestra)
+```
+
+- \n
+En este caso la normalidad de los datos sí se acepta, esto porque el valor de p es mayor a 0.05. Por lo tanto, no hay suficiente evidencia en contra para no aceptar la normalidad de los datos.
+
+- \n
+
+### **Test de Shapito-Wilks o S-W test**
+```{r}
+shapiro.test(muestra)
+```
+
+- \n
+En este caso no se encontró evidencia en contra para no asumir normalidad, esto porque al igual que las pruebas anteriores el valor de p dio mayor a 0.05.
+- \n
+
+### **Test omnibus de D’Agostino-Pearson**
+Si es posible realizar esta prueba porque el tamaño de la lista para los niños es de 20, por ende, si se puede realizar la prueba.
+
+```{r}
+dagoTest(muestra)
+```
+•	En este caso se aceptan la normalidad de los datos ya que todos los test fueron mayores a 0.05. 
+- \n
+### **Analizando los datos de la curtoris**
+```{r}
+  curtosis <- kurtosis(muestra)
+  simetria <- skewness(muestra)
+  plot (density(muestra), main = "Normal",
+  xlab = paste("Curtosis ", round(curtosis, 2), "\n",
+  "Simetría ", round(simetria,2)))
+```
+- \n
+Como se puede observar la simetría es de 0.38 por lo cual se acerca al cero, por lo tanto se puede decir que es simétrica, ya que ambos valores que están a los extremos se encuentran aproximadamente a la misma distancia de la media.
+En este caso la curtosis  muestra una campana muy alta alargada y con las colas bajas por ende se puede decir que es una Leptocúrtica además de que se inclina hacia la izquierda.
+
+- \n 
 ## **Muestra de niñas**
 
 - \n
 ```{r}
 
-# Se toma la  mustra de solamente las niñas
+# Se toma la  muestra de solamente las niñas
 muestra <- feetLength$G
 
 par(mfrow = c(1, 2)) # crea una matriz de tamaño 1x2 para imprimir dos gráficos de manera simultánea
@@ -737,15 +815,212 @@ plot(density(muestra), main="Densidad niñas")
 
 plot(density(muestra), main = "Estimación densidad")
 
-# Se generan valores para estimar la distribución normal de media y desviación estáandar igual a los datos de la muerta de feetLength de las niñas
+# Se generan valores para estimar la distribución normal de media y desviación estáandar igual a los datos de la lista de feetLength de los niños
 
 #En el from y en el to se agregan un número menos al menor de los datos y un número mayor al de los datos.
-x <- seq(from = 21,to = 29, by = 0.01)
+x <- seq(from = 20,to = 28, by = 0.01)
 u <- mean(feetLength$G)
 sigma <- sd(feetLength$G)
 lines(x, dnorm(x, mean = u, sd = sigma), col = "red")
 
 ```
+
+
+## **¿Se puede intuir una posible normalidad para los datos?**
+
+- \n En el caso de las niñas si se puede intuir una posible normalidad ya que como se puede apreciar en el gráfico anterior de la estimación de densidad es muy parecido el comportamiento de la línea color negro que representa los datos de las niñas a la línea roja.
+
+- \n 
+
+# AQUÍ FALTA LA PRUEBA DE QQ-PLOT, PORQUE MARCO ES UN IRRESPONSABLE Y NO LE HA PREGUNTADO AL PROFE
+
+- \n 
+
+
+- \n 
+### **Pruebas formales de normalidad S-W test, A-D test,K-S-L test.** 
+- \n
+
+### ***Test de Kolmogorov-Smirnov-Lilliefors o K-S-L test***
+```{r}
+lillie.test(muestra)
+```
+
+- \n
+En este caso la normalidad de los datos sí se acepta, esto porque el valor de p es mayor a 0.05. Por lo tanto, no hay suficiente evidencia en contra para no aceptar la normalidad de los datos.
+- \n
+
+### **Test de normalidad de Anderson-Darling o A-D test**
+```{r}
+ad.test(muestra)
+```
+
+- \n
+En este caso la normalidad de los datos sí se acepta, esto porque el valor de p es mayor a 0.05. Por lo tanto, no hay suficiente evidencia en contra para no aceptar la normalidad de los datos.
+
+- \n
+
+### **Test de Shapito-Wilks o S-W test**
+```{r}
+shapiro.test(muestra)
+```
+
+- \n
+En este caso no se encontró evidencia en contra para no asumir normalidad, esto porque al igual que las pruebas anteriores el valor de p dio mayor a 0.05.
+- \n
+
+### **Test omnibus de D’Agostino-Pearson**
+En este caso no posible realizar la prueba ya que el tamaño de lista para las niñas es de 19, por ende, no puede aplicarse la prueba.
+
+- \n
+
+### **Analizando datos de la curtoris**
+
+```{r}
+  curtosis <- kurtosis(muestra)
+  simetria <- skewness(muestra)
+  plot (density(muestra), main = "Normal",
+  xlab = paste("Curtosis ", round(curtosis, 2), "\n",
+  "Simetría ", round(simetria,2)))
+
+```
+
+Como se puede observar la simetría es de -0.05 por lo cual es menor a cero, por lo tanto, se puede decir que no es simétrica, indicando que el valor mayor está más cerca de la media que el valor menor. En este caso la curtosis muestra una campana muy alta alargada y con las colas bajas por ende se puede decir que es una Leptocúrtica además de que se inclina hacia la izquierda.
+
+- \n
+
+## **CASO 2: **
+
+- \n
+Se procederá a realizar un gráfico de normalidad con el fin de analizar el comportamiento de los datos de biceps.
+- \n
+
+## **Muestra de biceps**
+
+- \n
+
+A continuación se utilizarán los datos de biceps de la tabla medidas_cuerpo.
+
+```{r}
+url <- 'https://raw.githubusercontent.com/fhernanb/datos/master/medidas_cuerpo' 
+muestra <- read.table(file=url, header=T) 
+muestra <- muestra$biceps
+muestra
+
+par(mfrow = c(1, 2)) # crea una matriz de tamaño 1x2 para imprimir dos gráficos de manera simultánea
+
+hist(muestra, main="Histograma biceps")
+plot(density(muestra), main="Estimación biceps")
+
+plot(density(muestra), main = "Estimación densidad")
+
+# Se generan valores para estimar la distribución normal de media y desviación estándar de los biceps
+
+#En el from y en el to se agregan un número menos al menor de los datos y un número mayor al de los datos.
+x <- seq(from = 10,to = 50, by = 0.01)
+u <- mean(muestra)
+sigma <- sd(muestra)
+lines(x, dnorm(x, mean = u, sd = sigma), col = "red")
+
+
+```
+
+## **¿Se puede intuir una posible normalidad para los datos?**
+
+- \n En este caso no se puede intuir ya que a como se puede observar en el gráfico anterior el comportamiento que toma la línea color negro es muy distinta.
+
+
+- \n AQUÍ TAMBIÉN FALTA LO DE QQ-PLOT
+- \n 
+
+# AQUÍ FALTA LA PRUEBA DE QQ-PLOT, PORQUE MARCO ES UN IRRESPONSABLE Y NO LE HA PREGUNTADO AL PROFE
+
+
+- \n 
+### **Pruebas formales de normalidad S-W test, A-D test,K-S-L test.** 
+- \n
+
+### **Test de Kolmogorov-Smirnov-Lilliefors o K-S-L test**
+```{r}
+lillie.test(muestra)
+```
+
+- \n
+En este caso la normalidad de los datos  se acepta, esto porque el valor de p es mayor a 0.05. Por lo tanto, no hay suficiente evidencia para no aceptar la normalidad de los datos.
+- \n
+
+### **Test de normalidad de Anderson-Darling o A-D test**
+```{r}
+ad.test(muestra)
+```
+
+- \n
+En este caso la normalidad de los datos no se acepta, esto porque el valor de p es menor a 0.05. Por lo tanto, no hay suficiente evidencia para aceptar la normalidad de los datos.
+
+- \n
+
+### **Test de Shapito-Wilks o S-W test**
+```{r}
+shapiro.test(muestra)
+```
+
+- \n
+En este caso se encontró evidencia en contra para no asumir normalidad, esto porque al igual que las pruebas anteriores el valor de p dio menor a 0.05.
+- \n
+
+### **Test omnibus de D’Agostino-Pearson**
+
+- \n 
+
+Si es posible realizar esta prueba porque el tamaño de la lista para los biceps es de 36, por ende, si se puede realizar la prueba.
+```{r}
+dagoTest(muestra)
+```
+•	En este caso no se acepta la normalidad de los datos ya que dos de las pruebas son menores a 0.05. 
+
+- \n
+
+### **Analizando datos de la curtoris**
+
+```{r}
+  curtosis <- kurtosis(muestra)
+  simetria <- skewness(muestra)
+  plot (density(muestra), main = "Normal",
+  xlab = paste("Curtosis ", round(curtosis, 2), "\n",
+  "Simetría ", round(simetria,2)))
+
+```
+
+observar la simetría es de 0.01 por lo cual se acerca mucho al cero, por lo tanto se puede decir que es simétrica, ya que ambos valores que están a los extremos se encuentran aproximadamente a la misma distancia de la media. La curtosis se puede denotar un poco inclinada hacia la derecha y por lo que no es muy alta y su punta semi redonda se puede decir que es Mesocúrtica.
+- \n
+
+## **CASO 3: **
+
+- \n
+
+```{r}
+chisq.test(matrix(c(12,379,727,39,106,642),2,3))
+
+```
+
+- \n
+
+## **CASO 4: **
+
+- \n
+
+```{r}
+datos <- read.csv("desaceleracionPecho.csv", sep = ";")
+head(datos, 27)
+aov(Mediciones ~ Auto.Tipo, data = datos)
+summary(aov(Mediciones ~ Auto.Tipo, data = datos))
+desaceleracionPecho <- aov(Mediciones ~ Auto.Tipo , data = datos)
+
+#Pasamo la prueba ANOVa a la prueba Tuckey
+TukeyHSD(desaceleracionPecho)
+```
+
+
 
 
 
