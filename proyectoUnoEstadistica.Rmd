@@ -736,15 +736,10 @@ lines(x, dnorm(x, mean = u, sd = sigma), col = "red")
 u <- mean(muestra)
 sigma <- sd(muestra)
 
-EnvStats::qqPlot(muestra, y = NULL, distribution = "norm", param.list = list(mean = u, sd = sigma),
-     add.line = TRUE, 
-    points.col = 1, line.col = 100, line.lwd = par("cex"), line.lty = 1, 
-    digits = .Options$digits, main = NULL, xlab = "norm quantiles", ylab = "feetLengthBoys")
 
-
+car::qqPlot(muestra, distribution = "norm",mean = u, sd = sigma)
 ```
 
-FALTA EL QQ-PLOT PORQUE MARCO ES UN IRRESPONSABLE Y NO LE HA PREGUNTADO AL PROFE NADA AÚN.
 
 
 - \n 
@@ -808,6 +803,7 @@ En este caso la curtosis  muestra una campana muy alta alargada y con las colas 
 # Se toma la  muestra de solamente las niñas
 muestra <- feetLength$G
 
+
 par(mfrow = c(1, 2)) # crea una matriz de tamaño 1x2 para imprimir dos gráficos de manera simultánea
 
 hist(muestra, main="Histograma niñas")
@@ -832,7 +828,15 @@ lines(x, dnorm(x, mean = u, sd = sigma), col = "red")
 
 - \n 
 
-# AQUÍ FALTA LA PRUEBA DE QQ-PLOT, PORQUE MARCO ES UN IRRESPONSABLE Y NO LE HA PREGUNTADO AL PROFE
+### Gráfico QQ-plot
+- \n
+```{r}
+u <- mean(muestra)
+sigma <- sd(muestra)
+
+
+car::qqPlot(muestra, distribution = "norm",mean = u, sd = sigma)
+```
 
 - \n 
 
@@ -870,7 +874,7 @@ En este caso no se encontró evidencia en contra para no asumir normalidad, esto
 - \n
 
 ### **Test omnibus de D’Agostino-Pearson**
-En este caso no posible realizar la prueba ya que el tamaño de lista para las niñas es de 19, por ende, no puede aplicarse la prueba.
+En este caso no posible realizar la prueba, debido a que el tamaño de lista para las niñas es de 19, y por ende, no puede aplicarse la prueba.
 
 - \n
 
@@ -892,10 +896,10 @@ Como se puede observar la simetría es de -0.05 por lo cual es menor a cero, por
 ## **CASO 2: **
 
 - \n
-Se procederá a realizar un gráfico de normalidad con el fin de analizar el comportamiento de los datos de biceps.
+Se procederá a realizar un gráfico de normalidad con el fin de analizar el comportamiento de los datos de bíceps.
 - \n
 
-## **Muestra de biceps**
+## **Muestra de bíceps**
 
 - \n
 
@@ -920,6 +924,7 @@ plot(density(muestra), main = "Estimación densidad")
 x <- seq(from = 10,to = 50, by = 0.01)
 u <- mean(muestra)
 sigma <- sd(muestra)
+muestra
 lines(x, dnorm(x, mean = u, sd = sigma), col = "red")
 
 
@@ -930,12 +935,18 @@ lines(x, dnorm(x, mean = u, sd = sigma), col = "red")
 - \n En este caso no se puede intuir ya que a como se puede observar en el gráfico anterior el comportamiento que toma la línea color negro es muy distinta.
 
 
-- \n AQUÍ TAMBIÉN FALTA LO DE QQ-PLOT
 - \n 
 
-# AQUÍ FALTA LA PRUEBA DE QQ-PLOT, PORQUE MARCO ES UN IRRESPONSABLE Y NO LE HA PREGUNTADO AL PROFE
+### Gráfico QQ-plot
+- \n
+```{r}
+u <- mean(muestra)
+sigma <- sd(muestra)
 
 
+car::qqPlot(muestra, distribution = "norm",mean = u, sd = sigma)
+
+```
 - \n 
 ### **Pruebas formales de normalidad S-W test, A-D test,K-S-L test.** 
 - \n
