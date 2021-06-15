@@ -53,7 +53,7 @@ library(mosaicData)
 
 library(PASWR2)
 
-library(stests)
+#library(stests)
 
 library(BSDA)
 
@@ -68,8 +68,11 @@ library(datos)
 library(fBasics)
 library(nortest)
 library(EnvStats)
+library(corrr)
 library(ggplot2)
-
+library(ggcorrplot)
+library(bbmle)
+library(DALEX)
 data("flights")
 
 mosaicData <- mosaicData::KidsFeet
@@ -1034,7 +1037,268 @@ TukeyHSD(desaceleracionPecho)
 
 - \n
 
-## **CASO 7: **
+## **CASO 5: ** 
+
+```{r}
+grasas <- read.table('http://verso.mat.uam.es/~joser.berrendero/datos/EdadPesoGrasas.txt', header = TRUE)
+
+#summary(grasas)
+
+dataCor <- round( cor(grasas), 2 )
+
+dataCor
+```
+
+```{r}
+ggcorrplot(dataCor, method = "square")
+
+```
+
+
+- \n
+Se puede observar que existen correlaciones perfectas ya que son los datos que arrojan exactamente 1.0, este tipo de correlaciones se obtienen ya que se realizan con la misma variable, por ejemplo: peso con peso, grasa con grasa y edad con edad.
+
+También, se puede observar que la correlación entre las variables edad y grasas las cuales poseen un valor de 0.84, el cual es un valor cercano al 1, por lo que esta misma es considerada como una correlación positiva fuerte, por otra parte, el valor presentado entre el peso y edad corresponde a 0.24 y el valor entre peso y grasas corresponde a 0.27; estos valores presentados anteriormente se encuentran alejados del 1, por lo que se puede concluir que se tratan de correlaciones positivas débiles.
+
+- \n
+
+```{r}
+regresionLineal <- lm(grasas ~ edad, data = grasas)
+regresionLineal
+```
+- \n
+
+Por lo tanto, el modelo de RLS para los datos seleccionados sería: $grasas = 102.575 + 5.321 \cdot edad$ 
+
+- \n
+
+## Coeficiente de determinación 
+```{r}
+summary(lm(grasas ~ edad, data = grasas))$r.squared
+```
+## Coeficiente de correlación
+
+```{r}
+sqrt(summary(lm(grasas ~ edad, data = grasas))$r.squared)
+```
+En el caso anterior se puede indicar que, como $R = 0.8373534$ la correlación lineal entre los datos de edad y grasas es fuerte y positiva. Por otra parte, como $R^2 = 0.7011607$ se interpreta que la variación de las grasas, se debe a la variación que existe en la edad. El restante 30% se deben a otros factores.  
+
+- \n
+
+```{r}
+gg_dispersion <- ggplot(grasas, aes(edad, grasas))
+gg_dispersion + geom_point( alpha = 0.5 ) + geom_smooth(method = "lm")
+```
+- \n
+Observando el gráfico se puede notar por la dirección de los datos y también por la recta de ajuste, se puede concluir que se obtiene una correlación positiva. También, al observar que los puntos se encuentran cercanos a la recta de ajuste se define como una correlación más o menos fuerte.
+
+- \n
+
+```{r}  
+b0 <- 102.575
+b1 <- 5.321
+
+grasas.estimada <- b0 + b1*grasas$edad
+errores <- grasas.estimada - grasas$grasas
+lillie.test(errores)
+```
+Dado que el valor de P es mayor que la significancia se puede asumir que los datos se comportan con normalidad.
+
+- \n
+
+```{r}
+confint(lm(grasas$grasas ~ grasas$edad),level = 0.95)
+```
+Según los datos arrojados por el método "confint" se muestra que el intervalo de confianza corresponde a ]3.822367, 6.818986[
+
+- \n
+
+# Confianza
+```{r}
+
+x0 <- data.frame(edad = 27)
+predict.lm(regresionLineal, x0, interval = "confidence", level = 0.95 )
+
+```
+
+Se afirma que con el 95% de la confianza se puede afirmar que el valor de 𝜇de los valores Y asociados al X = 27, donde X representa los años de edad, se encuentran en el siguiente intervalo: ]220.6777, 271.7891[
+
+- \n
+# Predicción
+```{r}
+modelo <- lm(edad ~ grasas, data = grasas)
+
+#Promedio del intervalo de confianza
+promValores = (271.7891 + 220.6777) / 2
+
+
+x0_1 <- data.frame( grasas = promValores  )
+
+predict.lm(modelo, x0_1, interval = "prediction", level = 0.95)
+```
+- \n
+
+Con el 95% de confianza se puede afirmar que el verdadero valor de𝜇de los X que se encuentran asociados al promedio del intervalo de confianza Y = 246.2334 en cantidad de grasa, se encuentra en el intervalo ]15.99538 45.24849[
+
+\n 
+
+```{r}
+modelo <- lm(grasas ~ edad, data = grasas)
+summary(modelo)
+
+```
+
+Se puede notar que el valor de p es más pequeño con respecto al valor de alpha el cual es de 0.05, por lo cual se rechaza la hipótesis $H_0$, por lo que se puede considerar que ocurre independencia líneal entre las variables edad y grasa debido a que la pendiente es $\neq$ a 0
+
+\n
+
+## **CASO 6: **
+
+```{r}
+datosVentas <- read.csv('DatosVentas.csv', header = TRUE)
+
+str(datosVentas)
+```
+
+```{r}
+mod0 <- lm(ventas ~ tv, data = datosVentas)
+mod0
+
+summary(mod0)
+```
+
+La ecuación para el modelo RLS para los datos es: $ventas = 7.032594 + 0.047537 ⋅ tv$
+\n
+
+
+```{r}
+mod1 <- lm(ventas ~ tv + radio + periodico, data = datosVentas )
+summary(mod1)
+
+
+```
+Ecuación provisional del modelo a determinar: $ventas = b0 + b1tv + b2radio + b3*periódico$
+
+Ecuación del modelo estimado: $ventas = 2.938889 + 0.045765tv + 0.188530\cdot radio - 0.001037\cdot periodico$
+
+Los coeficientes que aportan al modelo son los que poseen un valor menor con respecto al nivel de significancia de la prueba, que en este caso el alpha posee un valor de $\alpha = 0.05$, por lo que se rechaza la hipótesis nula que determina la pendiente igual a 0.
+De esta manera, los coeficientes estadísticamente significativos con los cuales se puede asumir que la pendiente es diferente de 0 son: el coeficiente tv, el coeficiente radio como el intercepto, los cuales tienen un valor $2e^-16$.
+Por lo que al rechazar $H_0$, se muestra que existe dependencia lineal entre las variables.
+
+- \n
+
+
+```{r}
+mod2 <- lm(ventas ~ tv + radio, data = datosVentas )
+
+summary(mod2)
+ 
+```
+Con los datos obtenidos todos los coeficientes son significativos, ya que estos tiene un valor p menor al la significancia de la prueba.
+
+
+- \n
+```{r}
+mod3 <- lm(ventas ~ tv + radio + tv*radio, data = datosVentas)
+
+summary(mod3)
+
+```
+Los coeficientes mostrados son estadísticamente significativos ya que todos muestran un valor p menor al valor de la significancia de la prueba $\alpha = 0.05$
+
+- \n
+
+```{r}
+#Determinación
+summary(mod0)$r.squared
+
+#Correlación
+sqrt(summary(mod0)$r.squared)
+
+#Determinación
+summary(mod1)$r.squared
+
+#Correlación
+sqrt(summary(mod1)$r.squared)
+
+#Determinación
+summary(mod2)$r.squared
+
+#Correlación
+sqrt(summary(mod2)$r.squared)
+
+#Determinación
+summary(mod3)$r.squared
+
+#Correlación
+sqrt(summary(mod3)$r.squared)
+
+```
+
+#Se pega la tabla
+
+#Mejor modelo con respecto a los otros
+
+Al analizar los datos arrojados de los coeficientes se concluye que el mejor modelo obtenido con respecto a los 4 analizados es el mod3, ya que este cuenta con mayor correlación y determinación. Este modelo seleccionado al tener el valor del coeficiente de correlación de 0.9837635, muestra que sus datos no poseen una dispersión significante con respecto al modelo y finalmente el valor del coeficiente de determinación de 0.9677905 demuestra el resultado de las ventas con respecto a las variables que se utilizaron.
+
+
+# Correlación y determinación mod2 
+
+El coeficiente de correlación al encontrarse tan cercano al 1 demuestra que que posee una correlación positiva y fuerte, esto indica que los datos no poseen una dispersión significante con respecto al modelo.
+
+Finalmente, el valor obtenido del coeficiente de determinación es de 0.8971943 determina que aproximadamente el 89.71% en la variación de las ventas se debe a la variación publicada a través de la televisión (tv) y radio.
+
+- \n
+
+```{r}
+dim(datosVentas)
+```
+```{r}
+
+AICctab(mod0, mod1, mod2, mod3, base = T, delta = T, sort = T, weights = T, nobs = 200)
+```
+Al realizar el cálculo con el AIC para cada modelo, el orden arrojado se define de mejor a menor junto con el valor de AIC obtenido respectivamente. 
+
+- \n
+
+```{r}
+exp_lm0 <- DALEX::explain(mod0, data = datosVentas, label = "lm0", y = datosVentas$ventas) 
+```
+
+
+```{r}
+exp_lm2 <- DALEX::explain(mod2, data = datosVentas, label = "lm2", y = datosVentas$ventas) 
+```
+
+
+```{r}
+exp_lm3 <- DALEX::explain(mod3, data = datosVentas, label = "lm3", y = datosVentas$ventas)
+```
+#Performances
+
+
+
+```{r}
+pm0 <- model_performance(exp_lm0)
+pm2 <- model_performance(exp_lm2)
+pm3 <- model_performance(exp_lm3)
+
+plot(pm0,pm2, pm3)
+```
+
+
+Al analizar el gráfico mostrado, se concluye que el modelo con menor curva es el modelo que corresponde al mod3 ya que al poseer una curva tan baja se determina que este es el mejor de los tres modelos graficados.
+Para la selección anterior se utiliza el criterio de que el mejor modelo es el que presente menor curva, ya que esto significa que contiene el valor más pequeño de errores.
+
+- \n
+
+```{r}
+anova(mod0, mod1, mod2, mod3)
+```
+Al analizar los datos arrojados el mod3 es el que posee un menor RSS con respecto a los demás modelos analizados, el cual obtuvo un valor de 174,48 con lo cual se logra determinar que es el mejor modelo ya que los puntos se encuentran mayor ajustados.
+
+- \n 
+## **CASO 7: *
 
 - \n
 
