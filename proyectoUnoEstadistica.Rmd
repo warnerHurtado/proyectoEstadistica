@@ -68,6 +68,7 @@ library(datos)
 library(fBasics)
 library(nortest)
 library(EnvStats)
+library(ggplot2)
 
 data("flights")
 
@@ -726,7 +727,7 @@ lines(x, dnorm(x, mean = u, sd = sigma), col = "red")
 
 ## **¿Se puede intuir una posible normalidad para los datos?**
 
-- \n En el caso de los niños si se puede intuir una posible normalidad ya que como se puede apreciar en el gráfico anterior de la estimación de densidad es muy parecido el comportamiento de la línea color negro que representa los datos de los niños a la línea roja.
+- \n En el caso de los niños sí se puede intuir una posible normalidad ya que como se puede apreciar en el gráfico anterior de la estimación de densidad es muy parecido el comportamiento de la línea color negro que representa los datos de los niños a la línea roja.
 
 - \n
 
@@ -824,7 +825,7 @@ lines(x, dnorm(x, mean = u, sd = sigma), col = "red")
 
 ## **¿Se puede intuir una posible normalidad para los datos?**
 
-- \n En el caso de las niñas si se puede intuir una posible normalidad ya que como se puede apreciar en el gráfico anterior de la estimación de densidad es muy parecido el comportamiento de la línea color negro que representa los datos de las niñas a la línea roja.
+- \n En el caso de las niñas sí se puede intuir una posible normalidad ya que como se puede apreciar en el gráfico anterior de la estimación de densidad es muy parecido el comportamiento de la línea color negro que representa los datos de las niñas a la línea roja.
 
 - \n 
 
@@ -1030,6 +1031,104 @@ desaceleracionPecho <- aov(Mediciones ~ Auto.Tipo , data = datos)
 #Pasamo la prueba ANOVa a la prueba Tuckey
 TukeyHSD(desaceleracionPecho)
 ```
+
+- \n
+
+## **CASO 7: **
+
+- \n
+
+```{r}
+var <- read.table("jaws.txt",header=T) 
+var
+ggplot2::ggplot(var,aes(x = age, y = bone)) +
+  geom_point(shape = 21, width = 0.3, alpha = 0.4, fill = "blue", size = 1, stroke = 1)
+# en lugar de geom_point(), también puede usar geom_jitter()
+
+```
+
+```{r}
+model1 <-  stats::nls(bone~a*(1-exp(-c*age)),data = var, start=list(a=120,c=0.064))
+model1
+```
+$ y = a(1- e^{-c x })$ 
+$y = 115.5806(1-e^{(0.1188)*age})$
+
+```{r}
+X2 <- log(var$age)
+Y2 <- log(var$bone-115.5806)
+datos4 <- cbind(X2, Y2)
+datos4.df <- as.data.frame(datos4)
+modelolm <- lm(Y2 ~ 0 + X2, data = datos4.df) #Intercepto igual a cero
+modelolm
+```
+
+$y = 115.5806 + x^{(0.3945)}$
+```{r}
+xo <- seq(from = min(var$age), to = max(var$age) , by = 0.001)
+yo <- 115.5806*(1-exp(-0.1188*xo))
+data <- cbind(var$age, var$bone, xo, yo) # se juntan las columnas
+data.df <- as.data.frame(data) # se crea un objeto dataframe
+names(data.df) # verificamos los nombres de las columnas
+g3 <- ggplot(data.df, aes(V1, V2, xmin = 0, xmax = 55, ymin = 0, ymax = 150 ))
+
+g3 + geom_point(shape = 21, alpha = 0.4, fill = "red", size = 1, stroke = 1) +geom_line(aes(x = xo, y = yo), colour = "darkblue") + 
+  labs(colour = "Modelo RNLS")
+
+
+```
+El segundo modelo será: $ y= \alpha \cdot x^\beta $
+Se linealiza el modelo de la siguiente manera:
+  $ln(y) = ln(\alpha) + \beta ln(x)$
+Se realizan los siguientes cambios de variable para el modelo lineal:
+$X2 = ln(x), Y2 = ln(y), b_0 =ln(\alpha), b_1 = \beta$
+Ahora el modelo lineal a trabajar es el siguiente:
+$Y2= b_0 + b_1 X2$
+
+```{r}
+
+X2 <- log(var$age)
+Y2 <- log(var$bone)
+datosSegundoModelo <- cbind(X2, Y2)
+datosSegundoModelo.df <- as.data.frame(datosSegundoModelo)
+modelolm <- lm(Y2 ~ X2, data = datosSegundoModelo.df[-1,] ) #Intercepto igual a cero
+modelolm
+```
+De los resultados del modelo se tiene:
+$ \alpha = e^{(2.9462)}, \beta = 0.5155$
+Seguidamente se utilizan estos valores como condiciones iniciales para estimar el modelo
+$ y= \alpha \cdot x^\beta $, usando la función nls().
+```{r}
+model2 <-  stats::nls(bone~a*age^b,data = var, start=list(a=exp(2.9462),b=0.5155))
+model2
+```
+```{r}
+xo <- seq(from = min(var$age), to = max(var$age) , by = 0.001)
+yo <- 35.2926*xo^0.3279
+data <- cbind(var$age, var$bone, xo, yo) # se juntan las columnas
+data.df <- as.data.frame(data) # se crea un objeto dataframe
+names(data.df) # verificamos los nombres de las columnas
+g3 <- ggplot(data.df, aes(V1, V2, xmin = 0, xmax = 55, ymin = 0, ymax = 150 ))
+
+g3 + geom_point(shape = 21, alpha = 0.4, fill = "red", size = 1, stroke = 1) +geom_line(aes(x = xo, y = yo), colour = "darkblue") + 
+  labs(colour = "Modelo RNLS")
+```
+
+- \n
+Elegiendo el mejor modelo de los dos anteriormente creados:
+
+- \n
+
+```{r}
+stats::anova(model1,model2)
+```
+En este caso, tanto gráficamente como infiriendo un análisis de las sumas de los cuadrados de los residuos (Res.Sum Sq), se llegó a la conclusión que el mejor modelo es el modelo número uno(model1).
+Además, la función potencial del primer modelo (model1), tiende a estabilizarse como al final de la función, a diferencia del segundo modelo que tiende como a desbalancearse. Además, cuando empieza la curva tenemos datos muy dispersos hacia arriba en el segundo modelo,caso contrario al primero. Es por estas razones que se concluye que el mejor modelo tanto gráfica como por medio de las sumas de los cuadrados de los residuos, que el primer modelo es el mejor y más óptimo.
+
+
+
+
+
 
 
 
